@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAKSHI OS - Police & Protection</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+            min-height: 100vh;
+        }
+
+        /* Login Page */
+        .login-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            padding: 32px;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .login-logo-container {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 16px;
+            background: linear-gradient(135deg, #1e3a5f, #2d5a87);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-logo-img {
+            width: 60px;
+            height: 60px;
+        }
+
+        .login-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1e3a5f;
+            margin-bottom: 4px;
+        }
+
+        .login-subtitle {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 4px;
+        }
+
+        .login-subtitle-small {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        .role-selection {
+            margin: 24px 0;
+        }
+
+        .role-title {
+            font-size: 16px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 16px;
+            color: #374151;
+        }
+
+        .role-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .role-card {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .role-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .role-icon {
+            font-size: 32px;
+        }
+
+        .role-name {
+            flex: 1;
+            font-size: 16px;
+            font-weight: 600;
+            text-align: left;
+        }
+
+        .role-arrow {
+            font-size: 20px;
+            color: #9ca3af;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 12px 12px 12px 40px;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .login-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        .login-btn {
+            padding: 14px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .error-msg {
+            padding: 10px;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            color: #dc2626;
+            font-size: 13px;
+        }
+
+        .login-switch {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .link-btn {
+            background: none;
+            border: none;
+            color: #3b82f6;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .back-link {
+            background: none;
+            border: none;
+            color: #6b7280;
+            cursor: pointer;
+            margin-top: 8px;
+            font-size: 13px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #9ca3af;
+        }
+
+        /* Photo Upload */
+        .photo-upload-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .photo-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 3px dashed #d1d5db;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.2s;
+            background: #f9fafb;
+        }
+
+        .photo-preview:hover {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .photo-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .photo-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .photo-placeholder span {
+            font-size: 11px;
+            color: #888;
+        }
+
+        .photo-input {
+            display: none;
+        }
+
+        .photo-hint {
+            font-size: 11px;
+            color: #888;
+            margin-top: 6px;
+        }
+
+        /* Signup Sections */
+        .signup-section-divider {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 16px 0 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #6b7280;
+        }
+
+        .signup-section-divider::before,
+        .signup-section-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e5e7eb;
+        }
+
+        .signup-row-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .signup-textarea {
+            resize: none;
+            min-height: 50px;
+            font-family: inherit;
+        }
+
+        /* App Container */
+        .app-container {
+            min-height: 100vh;
+            background: #f8f9fa;
+        }
+
+        .app-header {
+            background: linear-gradient(135deg, #1e3a5f, #2d5a87);
+            color: white;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .header-subtitle {
+            font-size: 12px;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .roll-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .header-profile-section {
+            position: relative;
+        }
+
+        .profile-photo-wrapper {
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .profile-photo-wrapper:hover {
+            transform: scale(1.05);
+        }
+
+        .header-user-photo {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid white;
+        }
+
+        .header-user-photo-placeholder {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid white;
+        }
+
+        .profile-dropdown {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            min-width: 160px;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            padding: 12px 16px;
+            border: none;
+            background: white;
+            cursor: pointer;
+            font-size: 14px;
+            color: #333;
+            transition: background 0.2s;
+        }
+
+        .dropdown-item:hover {
+            background: #f8f9fa;
+        }
+
+        .dropdown-item span {
+            flex: 1;
+            text-align: left;
+        }
+
+        .logout-item {
+            border-top: 1px solid #e5e7eb;
+            color: #ef4444;
+        }
+
+        .logout-item:hover {
+            background: #fef2f2;
+        }
+
+        /* Dashboard */
+        .dashboard-content {
+            padding: 20px;
+        }
+
+        .welcome-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .welcome-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1e3a5f;
+            margin-bottom: 8px;
+        }
+
+        .welcome-text {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #3b82f6;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+        }
+
+        .subject-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .subject-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .subject-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .subject-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1e3a5f;
+        }
+
+        /* Profile Page */
+        .profile-page {
+            padding-bottom: 80px;
+        }
+
+        .profile-back-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 14px;
+            background: #f3f4f6;
+            color: #555;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 16px;
+        }
+
+        .profile-header-card {
+            background: linear-gradient(135deg, #1e3a5f, #2d5a87);
+            border-radius: 20px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .profile-photo-large {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .profile-photo-large-placeholder {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 4px solid white;
+        }
+
+        .profile-name {
+            font-size: 22px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .profile-role-badge {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            background: rgba(255,255,255,0.2);
+        }
+
+        .profile-roll-no {
+            font-size: 14px;
+            opacity: 0.9;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .profile-section {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            margin-bottom: 16px;
+        }
+
+        .profile-section-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1e3a5f;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .profile-field {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f8f8f8;
+        }
+
+        .profile-field:last-child {
+            border-bottom: none;
+        }
+
+        .profile-field-label {
+            font-size: 13px;
+            color: #888;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .profile-field-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1e3a5f;
+            text-align: right;
+            max-width: 60%;
+        }
+
+        .profile-field-value.empty {
+            color: #ccc;
+            font-style: italic;
+            font-weight: 400;
+        }
+
+        .logout-btn-full {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 16px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="login-page">
+        <div class="login-container">
+            <div class="login-header">
+                <div class="login-logo-container">
+                    <svg class="login-logo-img" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="45" fill="#f59e0b"/>
+                        <path d="M50 20 L60 40 L80 40 L65 55 L70 75 L50 65 L30 75 L35 55 L20 40 L40 40 Z" fill="#1e3a5f"/>
+                    </svg>
+                </div>
+                <h1 class="login-title">SAKSHI OS</h1>
+                <p class="login-subtitle">Police & Protection</p>
+                <p class="login-subtitle-small">संपूर्ण परीक्षा तयारी प्रणाली</p>
+            </div>
+
+            <div id="roleSelection" class="role-selection">
+                <h3 class="role-title">तुम्ही कोण आहात?</h3>
+                <div class="role-cards">
+                    <button class="role-card" onclick="selectRole('admin')" style="border-color: #f59e0b;">
+                        <span class="role-icon">👑</span>
+                        <span class="role-name">प्रशासक</span>
+                        <span class="role-arrow">→</span>
+                    </button>
+                    <button class="role-card" onclick="selectRole('teacher')" style="border-color: #3b82f6;">
+                        <span class="role-icon">👨‍🏫</span>
+                        <span class="role-name">शिक्षक</span>
+                        <span class="role-arrow">→</span>
+                    </button>
+                    <button class="role-card" onclick="selectRole('student')" style="border-color: #22c55e;">
+                        <span class="role-icon">🎓</span>
+                        <span class="role-name">विद्यार्थी</span>
+                        <span class="role-arrow">→</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="loginForm" class="hidden">
+                <div class="login-header">
+                    <div class="login-logo-container" id="loginRoleIcon">
+                        <span style="font-size: 32px;" id="loginRoleEmoji">🎓</span>
+                    </div>
+                    <h1 class="login-title" id="loginRoleTitle">विद्यार्थी लॉगिन</h1>
+                    <p class="login-subtitle">SAKSHI OS मध्ये स्वागत आहे</p>
+                </div>
+
+                <form class="login-form" onsubmit="handleLogin(event)">
+                    <div id="loginError" class="error-msg hidden"></div>
+                    
+                    <div class="input-group">
+                        <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                            <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                        <input type="email" id="loginEmail" placeholder="ईमेल" class="login-input" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        <input type="password" id="loginPassword" placeholder="पासवर्ड" class="login-input" required>
+                        <button type="button" class="toggle-password" onclick="togglePassword()">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <button type="submit" class="login-btn" id="loginBtn">लॉगिन करा</button>
+                </form>
+
+                <div class="login-switch">
+                    <p>खाते नाही? <button class="link-btn" onclick="showSignup()">नवीन खाते बनवा</button></p>
+                    <button class="back-link" onclick="showRoleSelection()">← मागे जा</button>
+                </div>
+            </div>
+
+            <div id="signupForm" class="hidden">
+                <div class="login-header">
+                    <div class="login-logo-container" id="signupRoleIcon">
+                        <span style="font-size: 32px;" id="signupRoleEmoji">🎓</span>
+                    </div>
+                    <h1 class="login-title" id="signupRoleTitle">विद्यार्थी खाते बनवा</h1>
+                    <p class="login-subtitle">SAKSHI OS मध्ये नोंदणी करा</p>
+                </div>
+
+                <form class="login-form" onsubmit="handleSignup(event)">
+                    <div id="signupError" class="error-msg hidden"></div>
+                    
+                    <!-- Photo Upload -->
+                    <div class="photo-upload-section">
+                        <div class="photo-preview" onclick="document.getElementById('photoInput').click()">
+                            <img id="photoPreview" class="photo-img hidden" alt="Profile">
+                            <div id="photoPlaceholder" class="photo-placeholder">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2">
+                                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                                    <circle cx="12" cy="13" r="4"></circle>
+                                </svg>
+                                <span>फोटो टाका</span>
+                            </div>
+                        </div>
+                        <input type="file" id="photoInput" class="photo-input" accept="image/*" onchange="handlePhotoUpload(event)">
+                        <p class="photo-hint">फोटो वर क्लिक करा (max 2MB)</p>
+                    </div>
+
+                    <div class="input-group">
+                        <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <input type="text" id="signupName" placeholder="पूर्ण नाव" class="login-input" required>
+                    </div>
+
+                    <div class="input-group">
+                        <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                            <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                        <input type="email" id="signupEmail" placeholder="ईमेल" class="login-input" required>
+                    </div>
+
+                    <div class="input-group">
+                        <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                        </svg>
+                        <input type="tel" id="signupPhone" placeholder="मोबाईल नंबर (10 अंक)" class="login-input" maxlength="10" required>
+                    </div>
+
+                    <div class="input-group">
+                        <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        <input type="date" id="signupDob" placeholder="जन्म तारीख" class="login-input" required>
+                    </div>
+
+                    <div class="input-group">
+                        <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+                            <line x1="2" y1="10" x2="22" y2="10"></line>
+                        </svg>
+                        <input type="text" id="signupAadhar" placeholder="आधार क्रमांक (12 अंक)" class="login-input" maxlength="12">
+                    </div>
+
+                    <div class="signup-section-divider">
+                        <span>📋 वैयक्तिक माहिती</span>
+                    </div>
+
+                    <div class="signup-row-2">
+                        <div class="input-group">
+                            <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M2 20h20"></path>
+                                <path d="M5 20V8l7-5 7 5v12"></path>
+                            </svg>
+                            <input type="text" id="signupHeight" placeholder="उंची (cm)" class="login-input">
+                        </div>
+                        <div class="input-group">
+                            <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 3v18"></path>
+                                <path d="M3 12h18"></path>
+                            </svg>
+                            <input type="text" id="signupWeight" placeholder="वजन (kg)" class="login-input">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
+                        </svg>
+                        <select id="signupBloodGroup" class="login-input">
+                            <option value="">रक्तगट निवडा</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                        </select>
+                    </div>
+
+                    <div class="signup-row-2">
+                        <div class="input-group">
+                            <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            <input type="text" id="signupFatherName" placeholder="वडिलांचे नाव" class="login-input">
+                        </div>
+                        <div class="input-group">
+                            <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            <input type="text" id="signupMotherName" placeholder="आईचे नाव" class="login-input">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                        </svg>
+                        <input type="text" id="signupQualification" placeholder="शैक्षणिक पात्रता (उदा. 12वी, BSc, BE)" class="login-input">
+                    </div>
+
+                    <div class="input-group">
+                        <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                        <textarea id="signupAddress" placeholder="पूर्ण पत्ता" class="login-input signup-textarea" rows="2"></textarea>
+                    </div>
+
+                    <div class="signup-section-divider">
+                        <span>🔒 सुरक्षा</span>
+                    </div>
+
+                    <div class="input-group">
+                        <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        <input type="password" id="signupPassword" placeholder="पासवर्ड (किमान 6 अक्षरे)" class="login-input" minlength="6" required>
+                    </div>
+
+                    <div class="input-group">
+                        <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        <input type="password" id="signupConfirmPassword" placeholder="पासवर्ड पुन्हा टाका" class="login-input" required>
+                    </div>
+
+                    <button type="submit" class="login-btn" id="signupBtn">खाते बनवा</button>
+                </form>
+
+                <div class="login-switch">
+                    <p>आधीच खाते आहे? <button class="link-btn" onclick="showLogin()">लॉगिन करा</button></p>
+                    <button class="back-link" onclick="showRoleSelection()">← मागे जा</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboardPage" class="app-container hidden">
+        <header class="app-header">
+            <div class="header-left">
+                <div>
+                    <h1 class="header-title" id="dashGreeting">नमस्कार, विद्यार्थी 🙏</h1>
+                    <p class="header-subtitle">
+                        <span id="dashRollBadge" class="roll-badge"></span>
+                        आजची तयारी सुरू करूया!
+                    </p>
+                </div>
+            </div>
+            <div class="header-profile-section">
+                <div class="profile-photo-wrapper" onclick="toggleDropdown()">
+                    <img id="dashUserPhoto" class="header-user-photo hidden" alt="Profile">
+                    <div id="dashUserPhotoPlaceholder" class="header-user-photo-placeholder">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </div>
+                </div>
+                <div id="profileDropdown" class="profile-dropdown hidden">
+                    <button class="dropdown-item" onclick="showProfile()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <span>प्रोफाइल</span>
+                    </button>
+                    <button class="dropdown-item logout-item" onclick="handleLogout()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        <span>बाहेर पडा</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div class="dashboard-content">
+            <div class="welcome-card">
+                <h2 class="welcome-title" id="welcomeTitle">SAKSHI OS मध्ये स्वागत आहे!</h2>
+                <p class="welcome-text">तुमची परीक्षा तयारी सुरू करा</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">0</div>
+                    <div class="stat-label">चाचण्या</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">0%</div>
+                    <div class="stat-label">अचूकता</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">0</div>
+                    <div class="stat-label">प्रश्न</div>
+                </div>
+            </div>
+
+            <h3 style="margin-bottom: 12px; color: #1e3a5f;">विषय निवडा</h3>
+            <div class="subjects-grid">
+                <div class="subject-card">
+                    <div class="subject-icon">📚</div>
+                    <div class="subject-name">मराठी</div>
+                </div>
+                <div class="subject-card">
+                    <div class="subject-icon">🔢</div>
+                    <div class="subject-name">गणित</div>
+                </div>
+                <div class="subject-card">
+                    <div class="subject-icon">🌍</div>
+                    <div class="subject-name">सामान्य ज्ञान</div>
+                </div>
+                <div class="subject-card">
+                    <div class="subject-icon">📜</div>
+                    <div class="subject-name">इतिहास</div>
+                </div>
+                <div class="subject-card">
+                    <div class="subject-icon">⚖️</div>
+                    <div class="subject-name">कायदा</div>
+                </div>
+                <div class="subject-card">
+                    <div class="subject-icon">📖</div>
+                    <div class="subject-name">मराठी व्याकरण</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Page -->
+    <div id="profilePage" class="app-container hidden profile-page">
+        <div style="padding: 12px 16px 0;">
+            <button class="profile-back-btn" onclick="showDashboard()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                मागे जा
+            </button>
+        </div>
+
+        <div style="padding: 0 16px;">
+            <div class="profile-header-card">
+                <img id="profilePhotoLarge" class="profile-photo-large hidden" alt="Profile">
+                <div id="profilePhotoLargePlaceholder" class="profile-photo-large-placeholder">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </div>
+                <h2 class="profile-name" id="profileName">नाव</h2>
+                <span class="profile-role-badge" id="profileRole">🎓 विद्यार्थी</span>
+                <span class="profile-roll-no" id="profileRollNo">🆔 SK001</span>
+            </div>
+
+            <div class="profile-section">
+                <h3 class="profile-section-title">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    वैयक्तिक माहिती
+                </h3>
+                <div class="profile-field">
+                    <span class="profile-field-label">📞 मोबाईल</span>
+                    <span class="profile-field-value" id="profilePhone">-</span>
+                </div>
+                <div class="profile-field">
+                    <span class="profile-field-label">📧 ईमेल</span>
+                    <span class="profile-field-value" id="profileEmail">-</span>
+                </div>
+                <div class="profile-field">
+                    <span class="profile-field-label">🎂 जन्म तारीख</span>
+                    <span class="profile-field-value" id="profileDob">-</span>
+                </div>
+                <div class="profile-field">
+                    <span class="profile-field-label">💳 आधार</span>
+                    <span class="profile-field-value" id="profileAadhar">-</span>
+                </div>
+                <div class="profile-field">
+                    <span class="profile-field-label">📏 उंची</span>
+                    <span class="profile-field-value" id="profileHeight">-</span>
+                </div>
+                <div class="profile-field">
+                    <span class="profile-field-label">⚖️ वजन</span>
+                    <span class="profile-field-value" id="profileWeight">-</span>
+                </div>
+                <div class="profile-field">
+                    <span class="profile-field-label">🩸 रक्तगट</span>
+                    <span class="profile-field-value" id="profileBloodGroup">-</span>
+                </div>
+            </div>
+
+            <div class="profile-section">
+                <h3 class="profile-section-title">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    कौटुंबिक माहिती
+                </h3>
+                <div class="profile-field">
+                    <span class="profile-field-label"> 👨 वडिलांचे नाव</span>
+                    <span class="profile-field-value" id="profileFatherName">-</span>
+                </div>
+                <div class="profile-field">
+                    <span class="profile-field-label"> 👩 आईचे नाव</span>
+                    <span class="profile-field-value" id="profileMotherName">-</span>
+                </div>
+            </div>
+
+            <div class="profile-section">
+                <h3 class="profile-section-title">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                    </svg>
+                    शिक्षण आणि पत्ता
+                </h3>
+                <div class="profile-field">
+                    <span class="profile-field-label">🎓 शैक्षणिक पात्रता</span>
+                    <span class="profile-field-value" id="profileQualification">-</span>
+                </div>
+                <div class="profile-field">
+                    <span class="profile-field-label">📍 पत्ता</span>
+                    <span class="profile-field-value" id="profileAddress">-</span>
+                </div>
+            </div>
+
+            <button class="logout-btn-full" onclick="handleLogout()">🚪 बाहेर पडा</button>
+        </div>
+    </div>
+
+    <script>
+        // State
+        let currentUser = null;
+        let selectedRole = null;
+        let photoData = '';
+
+        // Load from localStorage
+        function loadUsers() {
+            return JSON.parse(localStorage.getItem('sakshi_users') || '[]');
+        }
+
+        function saveUsers(users) {
+            localStorage.setItem('sakshi_users', JSON.stringify(users));
+        }
+
+        function loadCurrentUser() {
+            const user = localStorage.getItem('sakshi_current_user');
+            return user ? JSON.parse(user) : null;
+        }
+
+        function saveCurrentUser(user) {
+            if (user) {
+                localStorage.setItem('sakshi_current_user', JSON.stringify(user));
+            } else {
+                localStorage.removeItem('sakshi_current_user');
+            }
+        }
+
+        // Role selection
+        function selectRole(role) {
+            selectedRole = role;
+            showLogin();
+        }
+
+        // Navigation
+        function showRoleSelection() {
+            document.getElementById('roleSelection').classList.remove('hidden');
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('signupForm').classList.add('hidden');
+        }
+
+        function showLogin() {
+            document.getElementById('roleSelection').classList.add('hidden');
+            document.getElementById('loginForm').classList.remove('hidden');
+            document.getElementById('signupForm').classList.add('hidden');
+            
+            const roleEmojis = { admin: '👑', teacher: '👨‍🏫', student: '🎓' };
+            const roleTitles = { admin: 'प्रशासक', teacher: 'शिक्षक', student: 'विद्यार्थी' };
+            
+            document.getElementById('loginRoleEmoji').textContent = roleEmojis[selectedRole];
+            document.getElementById('loginRoleTitle').textContent = `${roleTitles[selectedRole]} लॉगिन`;
+        }
+
+        function showSignup() {
+            document.getElementById('roleSelection').classList.add('hidden');
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('signupForm').classList.remove('hidden');
+            
+            const roleEmojis = { admin: '👑', teacher: '👨‍🏫', student: '🎓' };
+            const roleTitles = { admin: 'प्रशासक', teacher: 'शिक्षक', student: 'विद्यार्थी' };
+            
+            document.getElementById('signupRoleEmoji').textContent = roleEmojis[selectedRole];
+            document.getElementById('signupRoleTitle').textContent = `${roleTitles[selectedRole]} खाते बनवा`;
+        }
+
+        function showDashboard() {
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('dashboardPage').classList.remove('hidden');
+            document.getElementById('profilePage').classList.add('hidden');
+            updateDashboard();
+        }
+
+        function showProfile() {
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('dashboardPage').classList.add('hidden');
+            document.getElementById('profilePage').classList.remove('hidden');
+            document.getElementById('profileDropdown').classList.add('hidden');
+            updateProfile();
+        }
+
+        // Photo upload
+        function handlePhotoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            if (file.size > 2 * 1024 * 1024) {
+                alert('फोटो 2MB पेक्षा लहान असावा');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                photoData = reader.result;
+                document.getElementById('photoPreview').src = photoData;
+                document.getElementById('photoPreview').classList.remove('hidden');
+                document.getElementById('photoPlaceholder').classList.add('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Toggle password visibility
+        function togglePassword() {
+            const input = document.getElementById('loginPassword');
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+
+        // Toggle dropdown
+        function toggleDropdown() {
+            document.getElementById('profileDropdown').classList.toggle('hidden');
+        }
+
+        // Generate roll number
+        function generateRollNo(role) {
+            const prefix = role === 'student' ? 'SK' : 'TK';
+            const users = loadUsers().filter(u => u.role === role && u.rollNo);
+            const maxNum = users.reduce((max, u) => {
+                const num = parseInt(u.rollNo.replace(prefix, ''));
+                return num > max ? num : max;
+            }, 0);
+            return `${prefix}${String(maxNum + 1).padStart(3, '0')}`;
+        }
+
+        // Login
+        function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            const users = loadUsers();
+            const user = users.find(u => u.email === email && u.password === password);
+            
+            if (!user) {
+                document.getElementById('loginError').textContent = '⚠️ ईमेल किंवा पासवर्ड चुकीचा आहे';
+                document.getElementById('loginError').classList.remove('hidden');
+                return;
+            }
+            
+            if (user.role !== selectedRole) {
+                document.getElementById('loginError').textContent = '⚠️ तुम्ही वेगळा role निवडला आहे';
+                document.getElementById('loginError').classList.remove('hidden');
+                return;
+            }
+            
+            currentUser = user;
+            saveCurrentUser(user);
+            showDashboard();
+        }
+
+        // Signup
+        function handleSignup(event) {
+            event.preventDefault();
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('signupConfirmPassword').value;
+            const phone = document.getElementById('signupPhone').value;
+            const aadhar = document.getElementById('signupAadhar').value;
+            
+            if (password !== confirmPassword) {
+                document.getElementById('signupError').textContent = '⚠️ पासवर्ड जुळत नाहीत';
+                document.getElementById('signupError').classList.remove('hidden');
+                return;
+            }
+            
+            if (password.length < 6) {
+                document.getElementById('signupError').textContent = '⚠️ पासवर्ड किमान 6 अक्षरे असावेत';
+                document.getElementById('signupError').classList.remove('hidden');
+                return;
+            }
+            
+            if (!/^\d{10}$/.test(phone)) {
+                document.getElementById('signupError').textContent = '⚠️ मोबाईल नंबर 10 अंकांचा असावा';
+                document.getElementById('signupError').classList.remove('hidden');
+                return;
+            }
+            
+            if (aadhar && !/^\d{12}$/.test(aadhar)) {
+                document.getElementById('signupError').textContent = '⚠️ आधार क्रमांक 12 अंकांचा असावा';
+                document.getElementById('signupError').classList.remove('hidden');
+                return;
+            }
+            
+            const users = loadUsers();
+            const email = document.getElementById('signupEmail').value;
+            
+            if (users.find(u => u.email === email)) {
+                document.getElementById('signupError').textContent = '⚠️ या ईमेलने आधीच खाते आहे';
+                document.getElementById('signupError').classList.remove('hidden');
+                return;
+            }
+            
+            const newUser = {
+                id: `user-${Date.now()}`,
+                name: document.getElementById('signupName').value,
+                email: email,
+                password: password,
+                phone: phone,
+                role: selectedRole,
+                photo: photoData,
+                dob: document.getElementById('signupDob').value,
+                aadhar: aadhar,
+                rollNo: generateRollNo(selectedRole),
+                height: document.getElementById('signupHeight').value,
+                weight: document.getElementById('signupWeight').value,
+                bloodGroup: document.getElementById('signupBloodGroup').value,
+                address: document.getElementById('signupAddress').value,
+                fatherName: document.getElementById('signupFatherName').value,
+                motherName: document.getElementById('signupMotherName').value,
+                qualification: document.getElementById('signupQualification').value,
+                createdAt: new Date().toISOString()
+            };
+            
+            users.push(newUser);
+            saveUsers(users);
+            
+            currentUser = newUser;
+            saveCurrentUser(newUser);
+            showDashboard();
+        }
+
+        // Logout
+        function handleLogout() {
+            currentUser = null;
+            saveCurrentUser(null);
+            document.getElementById('loginPage').classList.remove('hidden');
+            document.getElementById('dashboardPage').classList.add('hidden');
+            document.getElementById('profilePage').classList.add('hidden');
+            showRoleSelection();
+        }
+
+        // Update dashboard
+        function updateDashboard() {
+            if (!currentUser) return;
+            
+            document.getElementById('dashGreeting').textContent = `नमस्कार, ${currentUser.name.split(' ')[0]} 🙏`;
+            document.getElementById('dashRollBadge').textContent = currentUser.rollNo || '';
+            
+            if (currentUser.photo) {
+                document.getElementById('dashUserPhoto').src = currentUser.photo;
+                document.getElementById('dashUserPhoto').classList.remove('hidden');
+                document.getElementById('dashUserPhotoPlaceholder').classList.add('hidden');
+            } else {
+                document.getElementById('dashUserPhoto').classList.add('hidden');
+                document.getElementById('dashUserPhotoPlaceholder').classList.remove('hidden');
+            }
+            
+            document.getElementById('welcomeTitle').textContent = `${currentUser.name}, SAKSHI OS मध्ये स्वागत आहे!`;
+        }
+
+        // Update profile
+        function updateProfile() {
+            if (!currentUser) return;
+            
+            if (currentUser.photo) {
+                document.getElementById('profilePhotoLarge').src = currentUser.photo;
+                document.getElementById('profilePhotoLarge').classList.remove('hidden');
+                document.getElementById('profilePhotoLargePlaceholder').classList.add('hidden');
+            } else {
+                document.getElementById('profilePhotoLarge').classList.add('hidden');
+                document.getElementById('profilePhotoLargePlaceholder').classList.remove('hidden');
+            }
+            
+            document.getElementById('profileName').textContent = currentUser.name;
+            
+            const roleLabels = { admin: '👑 प्रशासक', teacher: '👨‍🏫 शिक्षक', student: '🎓 विद्यार्थी' };
+            document.getElementById('profileRole').textContent = roleLabels[currentUser.role] || currentUser.role;
+            document.getElementById('profileRollNo').textContent = currentUser.rollNo ? `🆔 ${currentUser.rollNo}` : '';
+            
+            document.getElementById('profilePhone').textContent = currentUser.phone || '-';
+            document.getElementById('profileEmail').textContent = currentUser.email || '-';
+            document.getElementById('profileDob').textContent = currentUser.dob || 'भरलेले नाही';
+            document.getElementById('profileAadhar').textContent = currentUser.aadhar ? `${currentUser.aadhar.slice(0, 4)} XXXX XXXX` : 'भरलेले नाही';
+            document.getElementById('profileHeight').textContent = currentUser.height ? `${currentUser.height} cm` : 'भरलेले नाही';
+            document.getElementById('profileWeight').textContent = currentUser.weight ? `${currentUser.weight} kg` : 'भरलेले नाही';
+            document.getElementById('profileBloodGroup').textContent = currentUser.bloodGroup || 'भरलेले नाही';
+            document.getElementById('profileFatherName').textContent = currentUser.fatherName || 'भरलेले नाही';
+            document.getElementById('profileMotherName').textContent = currentUser.motherName || 'भरलेले नाही';
+            document.getElementById('profileQualification').textContent = currentUser.qualification || 'भरलेले नाही';
+            document.getElementById('profileAddress').textContent = currentUser.address || 'भरलेले नाही';
+            
+            // Add empty class for empty fields
+            document.querySelectorAll('.profile-field-value').forEach(el => {
+                if (el.textContent === 'भरलेले नाही') {
+                    el.classList.add('empty');
+                } else {
+                    el.classList.remove('empty');
+                }
+            });
+        }
+
+        // Initialize
+        window.onload = function() {
+            const user = loadCurrentUser();
+            if (user) {
+                currentUser = user;
+                selectedRole = user.role;
+                showDashboard();
+            }
+        };
+    </script>
+</body>
+</html>
