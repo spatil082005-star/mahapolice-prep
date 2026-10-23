@@ -1,8 +1,8 @@
 {
   "id": "6adb278f65a5bf7b3bac18d5",
   "schemaVersion": 1,
-  "title": "MahaPolice Prep - Exam Preparation App",
-  "description": "Maharashtra Police Bharti आणि MPSC परीक्षांसाठी संपूर्ण तयारी अॅप — MCQ Practice, Mock Tests, Timer Quiz, Daily Target, Streak Tracker, Flash Cards, Student Attendance, आणि Progress Analytics सहित.",
+  "title": "SAKSHI OS",
+  "description": "संपूर्ण परीक्षा तयारी प्रणाली — विद्यार्थी, शिक्षक आणि प्रशासक यांच्यासाठी. MCQ सराव, मॉक चाचण्या, टायमर क्विझ, फ्लॅश कार्ड्स, उपस्थिती आणि प्रगती विश्लेषण सहित.",
   "entry": "src/main.tsx",
   "bindings": []
 }

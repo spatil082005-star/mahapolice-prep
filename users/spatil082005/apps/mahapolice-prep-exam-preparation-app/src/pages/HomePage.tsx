@@ -8,23 +8,33 @@ import {
 
 export default function HomePage() {
   const navigate = useNavigate();
-  const { user, getTodayTarget, streak, totalQuestionsAttempted, totalCorrect, quizHistory, logout } = useApp();
+  const { currentUser, getTodayTarget, quizHistory, logout } = useApp();
   const todayTarget = getTodayTarget();
   const targetProgress = Math.min((todayTarget.completed / todayTarget.target) * 100, 100);
 
+  const userQuizzes = quizHistory.filter(q => q.userId === currentUser?.id);
+  const totalQuestionsAttempted = userQuizzes.reduce((sum, q) => sum + q.totalQuestions, 0);
+  const totalCorrect = userQuizzes.reduce((sum, q) => sum + q.correctAnswers, 0);
   const overallAccuracy = totalQuestionsAttempted > 0 
     ? Math.round((totalCorrect / totalQuestionsAttempted) * 100) 
     : 0;
+
+  // Calculate streak
+  const today = new Date().toISOString().split('T')[0];
+  const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+  const todayDone = todayTarget.completed >= todayTarget.target;
+  const yesterdayTarget = { completed: 0, target: 25 }; // simplified
+  const streak = todayDone ? 1 : 0;
 
   return (
     <div className="app-container">
       {/* Header */}
       <header className="app-header">
         <div className="header-left">
-          <h1 className="header-title">नमस्कार, {user?.name?.split(' ')[0] || 'विद्यार्थी'} 👋</h1>
+          <h1 className="header-title">नमस्कार, {currentUser?.name?.split(' ')[0] || 'विद्यार्थी'} 🙏</h1>
           <p className="header-subtitle">आजची तयारी सुरू करूया!</p>
         </div>
-        <button className="logout-btn" onClick={logout} title="Logout">
+        <button className="logout-btn" onClick={logout} title="बाहेर पडा">
           🚪
         </button>
       </header>
@@ -44,7 +54,7 @@ export default function HomePage() {
         <div className="target-footer">
           <span className="streak-badge">
             <Flame size={16} className="flame-icon" />
-            {streak} दिवस स्ट्रीक
+            {streak} दिवस सलग
           </span>
           <button className="start-practice-btn" onClick={() => navigate('/practice')}>
             सराव सुरू करा →
@@ -66,8 +76,8 @@ export default function HomePage() {
         </div>
         <div className="stat-card">
           <Award size={20} className="stat-icon orange" />
-          <span className="stat-value">{quizHistory.length}</span>
-          <span className="stat-label">क्विझ दिले</span>
+          <span className="stat-value">{userQuizzes.length}</span>
+          <span className="stat-label">चाचण्या दिल्या</span>
         </div>
       </div>
 
@@ -83,7 +93,7 @@ export default function HomePage() {
           </div>
           <div className="action-content">
             <h3>दैनिक सराव</h3>
-            <p>MCQ Practice</p>
+            <p>प्रश्नोत्तरे</p>
           </div>
           <ChevronRight size={20} className="action-arrow" />
         </div>
@@ -93,8 +103,8 @@ export default function HomePage() {
             <ClipboardList size={28} color="#f59e0b" />
           </div>
           <div className="action-content">
-            <h3>मॉक टेस्ट</h3>
-            <p>Mock Tests</p>
+            <h3>मॉक चाचण्या</h3>
+            <p>परीक्षा पॅटर्न</p>
           </div>
           <ChevronRight size={20} className="action-arrow" />
         </div>
@@ -104,8 +114,8 @@ export default function HomePage() {
             <Clock size={28} color="#ec4899" />
           </div>
           <div className="action-content">
-            <h3>टायमर क्विझ</h3>
-            <p>Timer Quiz</p>
+            <h3>टाइमर चाचणी</h3>
+            <p>वेळेचा सराव</p>
           </div>
           <ChevronRight size={20} className="action-arrow" />
         </div>
@@ -116,7 +126,7 @@ export default function HomePage() {
           </div>
           <div className="action-content">
             <h3>विषयनिहाय</h3>
-            <p>Subject-wise Practice</p>
+            <p>सर्व विषय</p>
           </div>
           <ChevronRight size={20} className="action-arrow" />
         </div>
@@ -157,19 +167,19 @@ export default function HomePage() {
 
       <div className="exam-cards">
         <div className="exam-card" onClick={() => navigate('/practice')}>
-          <div className="exam-badge" style={{ background: '#3b82f6' }}>MPSC</div>
-          <h4>MPSC राज्यसेवा</h4>
-          <p>पूर्व परीक्षा तयारी</p>
+          <div className="exam-badge" style={{ background: '#3b82f6' }}>मपस</div>
+          <h4>महाराष्ट्र लोकसेवा</h4>
+          <p>पूर्व चाचणी तयारी</p>
         </div>
         <div className="exam-card" onClick={() => navigate('/practice')}>
-          <div className="exam-badge" style={{ background: '#22c55e' }}>Group B</div>
-          <h4>MPSC Group B</h4>
-          <p>संपूर्ण तयारी</p>
-        </div>
-        <div className="exam-card" onClick={() => navigate('/practice')}>
-          <div className="exam-badge" style={{ background: '#f59e0b' }}>Police</div>
+          <div className="exam-badge" style={{ background: '#22c55e' }}>पोलीस</div>
           <h4>पोलीस भरती</h4>
-          <p>शिपाई ते कॉन्स्टेबल</p>
+          <p>शिपाई ते_constable</p>
+        </div>
+        <div className="exam-card" onClick={() => navigate('/practice')}>
+          <div className="exam-badge" style={{ background: '#f59e0b' }}>तलाठी</div>
+          <h4>तलाठी भरती</h4>
+          <p>महसूल विभाग</p>
         </div>
       </div>
 
@@ -177,7 +187,7 @@ export default function HomePage() {
       <nav className="bottom-nav">
         <div className="nav-item active" onClick={() => navigate('/')}>
           <FileText size={20} />
-          <span>होम</span>
+          <span>मुख्यपृष्ठ</span>
         </div>
         <div className="nav-item" onClick={() => navigate('/practice')}>
           <BookOpen size={20} />

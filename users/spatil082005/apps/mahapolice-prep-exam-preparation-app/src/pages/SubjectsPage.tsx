@@ -34,7 +34,7 @@ export default function SubjectsPage() {
             <div className="subject-detail-header">
               <span className="subject-icon-large">{subject.icon}</span>
               <div>
-                <h3>{subject.nameMr}</h3>
+                <h3>{subject.name}</h3>
                 <p>{subject.name} • {getQuestionsBySubject(subject.id).length} प्रश्न</p>
               </div>
             </div>
@@ -73,7 +73,7 @@ export default function SubjectsPage() {
                 navigate('/quiz');
               }}
             >
-              {subject.nameMr} सराव सुरू करा →
+              {subject.name} सराव सुरू करा →
             </button>
           </div>
         ))}

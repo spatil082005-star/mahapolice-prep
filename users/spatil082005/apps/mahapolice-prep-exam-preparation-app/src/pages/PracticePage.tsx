@@ -35,7 +35,7 @@ export default function PracticePage() {
           <button className="back-btn" onClick={() => setSelectedSubject(null)}>
             <ArrowLeft size={20} />
           </button>
-          <h2>{subject?.nameMr || subject?.name}</h2>
+          <h2>{subject?.name}</h2>
         </header>
 
         <div className="practice-config">
@@ -53,7 +53,7 @@ export default function PracticePage() {
           </div>
 
           <div className="subject-info">
-            <p>📚 विषय: <strong>{subject?.nameMr}</strong></p>
+            <p>📚 विषय: <strong>{subject?.name}</strong></p>
             <p>📝 उपलब्ध प्रश्न: <strong>{getQuestionsBySubject(selectedSubject).length}</strong></p>
           </div>
 
@@ -121,8 +121,7 @@ export default function PracticePage() {
           >
             <div className="subject-icon">{subject.icon}</div>
             <div className="subject-info">
-              <h4>{subject.nameMr}</h4>
-              <p>{subject.name}</p>
+              <h4>{subject.name}</h4>
               <span className="question-count">
                 {getQuestionsBySubject(subject.id).length} प्रश्न
               </span>
@@ -135,7 +134,7 @@ export default function PracticePage() {
       <div className="timer-quiz-option" onClick={() => navigate('/timer-quiz')}>
         <Clock size={24} color="#ec4899" />
         <div>
-          <h4>टायमर क्विझ</h4>
+          <h4>टाइमर चाचणी</h4>
           <p>वेळेच्या मर्यादेत सराव करा</p>
         </div>
       </div>
@@ -144,7 +143,7 @@ export default function PracticePage() {
       <nav className="bottom-nav">
         <div className="nav-item" onClick={() => navigate('/')}>
           <BookOpen size={20} />
-          <span>होम</span>
+          <span>मुख्यपृष्ठ</span>
         </div>
         <div className="nav-item active" onClick={() => navigate('/practice')}>
           <BookOpen size={20} />

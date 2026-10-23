@@ -11,29 +11,42 @@ import ProgressPage from './pages/ProgressPage';
 import FlashCardsPage from './pages/FlashCardsPage';
 import AttendancePage from './pages/AttendancePage';
 import SubjectsPage from './pages/SubjectsPage';
+import AdminDashboard from './pages/AdminDashboard';
+import TeacherDashboard from './pages/TeacherDashboard';
 import './styles.css';
 
-function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { isLoggedIn } = useApp();
-  return isLoggedIn ? <>{children}</> : <Navigate to="/login" />;
+function ProtectedRoute({ children, allowedRoles }: { children: React.ReactNode; allowedRoles?: string[] }) {
+  const { currentUser } = useApp();
+  if (!currentUser) return <Navigate to="/login" />;
+  if (allowedRoles && !allowedRoles.includes(currentUser.role)) return <Navigate to="/login" />;
+  return <>{children}</>;
 }
 
 function AppRoutes() {
-  const { isLoggedIn } = useApp();
+  const { currentUser } = useApp();
   
   return (
     <Routes>
-      <Route path="/login" element={isLoggedIn ? <Navigate to="/" /> : <LoginPage />} />
-      <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
-      <Route path="/practice" element={<ProtectedRoute><PracticePage /></ProtectedRoute>} />
-      <Route path="/quiz" element={<ProtectedRoute><QuizPage /></ProtectedRoute>} />
-      <Route path="/quiz-result" element={<ProtectedRoute><QuizResultPage /></ProtectedRoute>} />
-      <Route path="/mock-tests" element={<ProtectedRoute><MockTestPage /></ProtectedRoute>} />
-      <Route path="/timer-quiz" element={<ProtectedRoute><TimerQuizPage /></ProtectedRoute>} />
-      <Route path="/progress" element={<ProtectedRoute><ProgressPage /></ProtectedRoute>} />
-      <Route path="/flash-cards" element={<ProtectedRoute><FlashCardsPage /></ProtectedRoute>} />
-      <Route path="/attendance" element={<ProtectedRoute><AttendancePage /></ProtectedRoute>} />
-      <Route path="/subjects" element={<ProtectedRoute><SubjectsPage /></ProtectedRoute>} />
+      <Route path="/login" element={currentUser ? <Navigate to="/" /> : <LoginPage />} />
+      
+      {/* Student Routes */}
+      <Route path="/" element={<ProtectedRoute allowedRoles={['student']}><HomePage /></ProtectedRoute>} />
+      <Route path="/practice" element={<ProtectedRoute allowedRoles={['student']}><PracticePage /></ProtectedRoute>} />
+      <Route path="/quiz" element={<ProtectedRoute allowedRoles={['student']}><QuizPage /></ProtectedRoute>} />
+      <Route path="/quiz-result" element={<ProtectedRoute allowedRoles={['student']}><QuizResultPage /></ProtectedRoute>} />
+      <Route path="/mock-tests" element={<ProtectedRoute allowedRoles={['student']}><MockTestPage /></ProtectedRoute>} />
+      <Route path="/timer-quiz" element={<ProtectedRoute allowedRoles={['student']}><TimerQuizPage /></ProtectedRoute>} />
+      <Route path="/progress" element={<ProtectedRoute allowedRoles={['student']}><ProgressPage /></ProtectedRoute>} />
+      <Route path="/flash-cards" element={<ProtectedRoute allowedRoles={['student']}><FlashCardsPage /></ProtectedRoute>} />
+      <Route path="/attendance" element={<ProtectedRoute allowedRoles={['student']}><AttendancePage /></ProtectedRoute>} />
+      <Route path="/subjects" element={<ProtectedRoute allowedRoles={['student']}><SubjectsPage /></ProtectedRoute>} />
+      
+      {/* Admin Routes */}
+      <Route path="/admin" element={<ProtectedRoute allowedRoles={['admin']}><AdminDashboard /></ProtectedRoute>} />
+      
+      {/* Teacher Routes */}
+      <Route path="/teacher" element={<ProtectedRoute allowedRoles={['teacher']}><TeacherDashboard /></ProtectedRoute>} />
+      
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );

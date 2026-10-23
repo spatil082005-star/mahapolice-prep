@@ -156,8 +156,8 @@ export default function QuizPage() {
       <div className="question-container">
         <div className="question-number">
           प्रश्न {currentQ + 1}
-          <span className={`difficulty-badge ${question.difficulty}`}>
-            {question.difficulty === 'easy' ? 'सोपे' : question.difficulty === 'medium' ? 'मध्यम' : 'कठीण'}
+          <span className={`difficulty-badge ${question.difficulty === 'सोपे' ? 'easy' : question.difficulty === 'मध्यम' ? 'medium' : 'hard'}`}>
+            {question.difficulty}
           </span>
         </div>
         <h3 className="question-text">{question.question}</h3>

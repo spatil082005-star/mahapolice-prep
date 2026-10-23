@@ -65,7 +65,7 @@ export default function ProgressPage() {
           return (
             <div key={subject.id} className="subject-accuracy-item">
               <div className="subject-accuracy-header">
-                <span>{subject.icon} {subject.nameMr}</span>
+                <span>{subject.icon} {subject.name}</span>
                 <span>{accuracy}%</span>
               </div>
               <div className="subject-accuracy-bar">

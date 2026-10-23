@@ -74,7 +74,7 @@ export default function TimerQuizPage() {
               onClick={() => setSelectedSubject(subject.id)}
               style={selectedSubject === subject.id ? { borderColor: subject.color } : {}}
             >
-              {subject.icon} {subject.nameMr}
+              {subject.icon} {subject.name}
             </button>
           ))}
         </div>

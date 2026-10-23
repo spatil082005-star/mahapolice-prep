@@ -1,14 +1,21 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-interface User {
-  id: number;
+// User types
+export type UserRole = 'admin' | 'teacher' | 'student';
+
+export interface User {
+  id: string;
   name: string;
+  email: string;
+  password: string;
   phone: string;
-  avatar?: string;
+  role: UserRole;
+  createdAt: string;
 }
 
-interface QuizResult {
+export interface QuizResult {
   id: string;
+  userId: string;
   date: string;
   type: 'practice' | 'mock' | 'timer' | 'daily';
   subject?: string;
@@ -18,60 +25,110 @@ interface QuizResult {
   score: number;
 }
 
-interface AttendanceRecord {
+export interface AttendanceRecord {
+  userId: string;
   date: string;
   status: 'present' | 'absent' | 'late';
   checkInTime?: string;
 }
 
-interface DailyTarget {
+export interface DailyTarget {
+  userId: string;
   date: string;
   target: number;
   completed: number;
 }
 
 interface AppState {
-  user: User | null;
-  isLoggedIn: boolean;
+  currentUser: User | null;
+  users: User[];
   quizHistory: QuizResult[];
   attendance: AttendanceRecord[];
   dailyTargets: DailyTarget[];
-  streak: number;
-  totalQuestionsAttempted: number;
-  totalCorrect: number;
 }
 
 interface AppContextType extends AppState {
-  login: (name: string, phone: string) => void;
+  // Auth
+  login: (email: string, password: string) => { success: boolean; error?: string };
+  signup: (name: string, email: string, password: string, phone: string, role: 'teacher' | 'student') => { success: boolean; error?: string };
   logout: () => void;
-  addQuizResult: (result: Omit<QuizResult, 'id' | 'date'>) => void;
+  // Quiz
+  addQuizResult: (result: Omit<QuizResult, 'id' | 'date' | 'userId'>) => void;
+  getUserQuizHistory: (userId: string) => QuizResult[];
+  // Attendance
   markAttendance: (status: 'present' | 'absent' | 'late') => void;
-  updateDailyTarget: (completed: number) => void;
-  getTodayTarget: () => DailyTarget;
-  getSubjectAccuracy: (subjectId: string) => number;
   getTodayAttendance: () => AttendanceRecord | undefined;
+  getUserAttendance: (userId: string) => AttendanceRecord[];
+  // Daily Target
+  getTodayTarget: () => DailyTarget;
+  updateDailyTarget: (completed: number) => void;
+  // Stats
+  getSubjectAccuracy: (subjectId: string) => number;
+  // User management (admin)
+  getAllStudents: () => User[];
+  getAllTeachers: () => User[];
+  deleteUser: (userId: string) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
+const STORAGE_KEY = 'sakshi_os_data';
 
-const STORAGE_KEY = 'mahapolice_prep_data';
+const getToday = () => new Date().toISOString().split('T')[0];
+
+// Default admin accounts
+const defaultAdmins: User[] = [
+  {
+    id: 'admin-1',
+    name: 'करण पाटल',
+    email: 'pailvankaranpatil@gmail.com',
+    password: 'SK@082005',
+    phone: '9876543210',
+    role: 'admin',
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: 'admin-2',
+    name: 'प्रशासक दोन',
+    email: 'admin2@sakshios.com',
+    password: 'Admin@123',
+    phone: '9876543211',
+    role: 'admin',
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: 'admin-3',
+    name: 'प्रशासक तीन',
+    email: 'admin3@sakshios.com',
+    password: 'Admin@456',
+    phone: '9876543212',
+    role: 'admin',
+    createdAt: new Date().toISOString(),
+  },
+];
 
 const loadState = (): AppState => {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) return JSON.parse(saved);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      // Ensure default admins exist
+      const allUsers = [...defaultAdmins];
+      parsed.users?.forEach((u: User) => {
+        if (!allUsers.find(a => a.email === u.email)) {
+          allUsers.push(u);
+        }
+      });
+      return { ...parsed, users: allUsers };
+    }
   } catch (e) {
     console.error('Failed to load state:', e);
   }
   return {
-    user: null,
-    isLoggedIn: false,
+    currentUser: null,
+    users: [...defaultAdmins],
     quizHistory: [],
     attendance: [],
     dailyTargets: [],
-    streak: 0,
-    totalQuestionsAttempted: 0,
-    totalCorrect: 0,
   };
 };
 
@@ -83,8 +140,6 @@ const saveState = (state: AppState) => {
   }
 };
 
-const getToday = () => new Date().toISOString().split('T')[0];
-
 export function AppProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<AppState>(loadState);
 
@@ -92,131 +147,173 @@ export function AppProvider({ children }: { children: ReactNode }) {
     saveState(state);
   }, [state]);
 
-  const login = (name: string, phone: string) => {
+  const login = (email: string, password: string): { success: boolean; error?: string } => {
+    const user = state.users.find(u => u.email === email && u.password === password);
+    if (user) {
+      setState(prev => ({ ...prev, currentUser: user }));
+      return { success: true };
+    }
+    return { success: false, error: 'ईमेल किंवा पासवर्ड चुकीचा आहे' };
+  };
+
+  const signup = (name: string, email: string, password: string, phone: string, role: 'teacher' | 'student'): { success: boolean; error?: string } => {
+    const exists = state.users.find(u => u.email === email);
+    if (exists) {
+      return { success: false, error: 'या ईमेलने आधीच खाते आहे' };
+    }
+    const newUser: User = {
+      id: `user-${Date.now()}`,
+      name,
+      email,
+      password,
+      phone,
+      role,
+      createdAt: new Date().toISOString(),
+    };
     setState(prev => ({
       ...prev,
-      user: { id: Date.now(), name, phone },
-      isLoggedIn: true,
+      users: [...prev.users, newUser],
+      currentUser: newUser,
     }));
+    return { success: true };
   };
 
   const logout = () => {
-    setState(prev => ({
-      ...prev,
-      user: null,
-      isLoggedIn: false,
-    }));
+    setState(prev => ({ ...prev, currentUser: null }));
   };
 
-  const addQuizResult = (result: Omit<QuizResult, 'id' | 'date'>) => {
+  const addQuizResult = (result: Omit<QuizResult, 'id' | 'date' | 'userId'>) => {
+    if (!state.currentUser) return;
     const newResult: QuizResult = {
       ...result,
       id: Date.now().toString(),
+      userId: state.currentUser.id,
       date: getToday(),
     };
     setState(prev => {
       const updated = {
         ...prev,
         quizHistory: [newResult, ...prev.quizHistory],
-        totalQuestionsAttempted: prev.totalQuestionsAttempted + result.totalQuestions,
-        totalCorrect: prev.totalCorrect + result.correctAnswers,
       };
       // Update daily target
       const today = getToday();
-      const existingTarget = prev.dailyTargets.find(t => t.date === today);
+      const existingTarget = prev.dailyTargets.find(t => t.userId === prev.currentUser!.id && t.date === today);
       if (existingTarget) {
         updated.dailyTargets = prev.dailyTargets.map(t =>
-          t.date === today ? { ...t, completed: t.completed + result.totalQuestions } : t
+          t.userId === prev.currentUser!.id && t.date === today
+            ? { ...t, completed: t.completed + result.totalQuestions }
+            : t
         );
       } else {
-        updated.dailyTargets = [...prev.dailyTargets, { date: today, target: 25, completed: result.totalQuestions }];
-      }
-      // Update streak
-      const todayRecord = updated.dailyTargets.find(t => t.date === today);
-      if (todayRecord && todayRecord.completed >= todayRecord.target) {
-        const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
-        const yesterdayRecord = updated.dailyTargets.find(t => t.date === yesterday);
-        if (yesterdayRecord && yesterdayRecord.completed >= yesterdayRecord.target) {
-          updated.streak = prev.streak + 1;
-        } else if (prev.streak === 0) {
-          updated.streak = 1;
-        }
+        updated.dailyTargets = [...prev.dailyTargets, { userId: prev.currentUser!.id, date: today, target: 25, completed: result.totalQuestions }];
       }
       return updated;
     });
   };
 
+  const getUserQuizHistory = (userId: string) => {
+    return state.quizHistory.filter(q => q.userId === userId);
+  };
+
   const markAttendance = (status: 'present' | 'absent' | 'late') => {
+    if (!state.currentUser) return;
     const today = getToday();
     const now = new Date();
     const checkInTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
     
     setState(prev => {
-      const existing = prev.attendance.find(a => a.date === today);
+      const existing = prev.attendance.find(a => a.userId === prev.currentUser!.id && a.date === today);
       if (existing) {
         return {
           ...prev,
           attendance: prev.attendance.map(a =>
-            a.date === today ? { ...a, status, checkInTime } : a
+            a.userId === prev.currentUser!.id && a.date === today ? { ...a, status, checkInTime } : a
           ),
         };
       }
       return {
         ...prev,
-        attendance: [...prev.attendance, { date: today, status, checkInTime }],
+        attendance: [...prev.attendance, { userId: prev.currentUser!.id, date: today, status, checkInTime }],
       };
     });
   };
 
+  const getTodayAttendance = () => {
+    if (!state.currentUser) return undefined;
+    const today = getToday();
+    return state.attendance.find(a => a.userId === state.currentUser!.id && a.date === today);
+  };
+
+  const getUserAttendance = (userId: string) => {
+    return state.attendance.filter(a => a.userId === userId);
+  };
+
+  const getTodayTarget = (): DailyTarget => {
+    if (!state.currentUser) return { userId: '', date: getToday(), target: 25, completed: 0 };
+    const today = getToday();
+    const existing = state.dailyTargets.find(t => t.userId === state.currentUser!.id && t.date === today);
+    return existing || { userId: state.currentUser!.id, date: today, target: 25, completed: 0 };
+  };
+
   const updateDailyTarget = (completed: number) => {
+    if (!state.currentUser) return;
     const today = getToday();
     setState(prev => {
-      const existing = prev.dailyTargets.find(t => t.date === today);
+      const existing = prev.dailyTargets.find(t => t.userId === prev.currentUser!.id && t.date === today);
       if (existing) {
         return {
           ...prev,
           dailyTargets: prev.dailyTargets.map(t =>
-            t.date === today ? { ...t, completed } : t
+            t.userId === prev.currentUser!.id && t.date === today ? { ...t, completed } : t
           ),
         };
       }
       return {
         ...prev,
-        dailyTargets: [...prev.dailyTargets, { date: today, target: 25, completed }],
+        dailyTargets: [...prev.dailyTargets, { userId: prev.currentUser!.id, date: today, target: 25, completed }],
       };
     });
   };
 
-  const getTodayTarget = (): DailyTarget => {
-    const today = getToday();
-    const existing = state.dailyTargets.find(t => t.date === today);
-    return existing || { date: today, target: 25, completed: 0 };
-  };
-
   const getSubjectAccuracy = (subjectId: string): number => {
-    const subjectQuizzes = state.quizHistory.filter(q => q.subject === subjectId);
-    if (subjectQuizzes.length === 0) return 0;
-    const totalQ = subjectQuizzes.reduce((sum, q) => sum + q.totalQuestions, 0);
-    const totalC = subjectQuizzes.reduce((sum, q) => sum + q.correctAnswers, 0);
+    if (!state.currentUser) return 0;
+    const userQuizzes = state.quizHistory.filter(q => q.userId === state.currentUser!.id && q.subject === subjectId);
+    if (userQuizzes.length === 0) return 0;
+    const totalQ = userQuizzes.reduce((sum, q) => sum + q.totalQuestions, 0);
+    const totalC = userQuizzes.reduce((sum, q) => sum + q.correctAnswers, 0);
     return totalQ > 0 ? Math.round((totalC / totalQ) * 100) : 0;
   };
 
-  const getTodayAttendance = () => {
-    const today = getToday();
-    return state.attendance.find(a => a.date === today);
+  const getAllStudents = () => state.users.filter(u => u.role === 'student');
+  const getAllTeachers = () => state.users.filter(u => u.role === 'teacher');
+
+  const deleteUser = (userId: string) => {
+    setState(prev => ({
+      ...prev,
+      users: prev.users.filter(u => u.id !== userId),
+      quizHistory: prev.quizHistory.filter(q => q.userId !== userId),
+      attendance: prev.attendance.filter(a => a.userId !== userId),
+      dailyTargets: prev.dailyTargets.filter(t => t.userId !== userId),
+    }));
   };
 
   return (
     <AppContext.Provider value={{
       ...state,
       login,
+      signup,
       logout,
       addQuizResult,
+      getUserQuizHistory,
       markAttendance,
-      updateDailyTarget,
-      getTodayTarget,
-      getSubjectAccuracy,
       getTodayAttendance,
+      getUserAttendance,
+      getTodayTarget,
+      updateDailyTarget,
+      getSubjectAccuracy,
+      getAllStudents,
+      getAllTeachers,
+      deleteUser,
     }}>
       {children}
     </AppContext.Provider>

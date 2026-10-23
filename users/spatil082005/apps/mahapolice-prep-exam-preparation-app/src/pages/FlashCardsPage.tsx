@@ -53,7 +53,7 @@ export default function FlashCardsPage() {
               style={{ borderColor: subject.color }}
             >
               <span className="flash-subject-icon">{subject.icon}</span>
-              <span className="flash-subject-name">{subject.nameMr}</span>
+              <span className="flash-subject-name">{subject.name}</span>
               <span className="flash-subject-count">
                 {questions.filter(q => q.subject === subject.id).length} कार्ड्स
               </span>
