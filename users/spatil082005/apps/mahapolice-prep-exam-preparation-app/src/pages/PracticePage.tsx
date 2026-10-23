@@ -1,17 +1,43 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { subjects, getQuestionsBySubject, getRandomQuestions } from '../data/questions';
+import { subjects, getQuestionsBySubject, getRandomQuestions, questions as builtInQuestions } from '../data/questions';
+import { useApp } from '../context/AppContext';
 import { ArrowLeft, BookOpen, Clock, Zap } from 'lucide-react';
 
 export default function PracticePage() {
   const navigate = useNavigate();
+  const { teacherQuestions } = useApp();
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
   const [questionCount, setQuestionCount] = useState(25);
 
+  // Combine built-in questions with teacher questions
+  const allQuestions = useMemo(() => {
+    const teacherQs = teacherQuestions.map(tq => ({
+      id: tq.id,
+      subject: tq.subject,
+      topic: tq.topic,
+      question: tq.question,
+      options: tq.options,
+      correct: tq.correct,
+      explanation: tq.explanation,
+      difficulty: tq.difficulty,
+    }));
+    return [...builtInQuestions, ...teacherQs];
+  }, [teacherQuestions]);
+
+  const getQuestionsBySubjectLocal = (subjectId: string) => 
+    allQuestions.filter(q => q.subject === subjectId);
+
+  const getRandomQuestionsLocal = (count: number, subjectId?: string) => {
+    let pool = subjectId ? getQuestionsBySubjectLocal(subjectId) : allQuestions;
+    const shuffled = [...pool].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, Math.min(count, pool.length));
+  };
+
   const startQuiz = () => {
     const questions = selectedSubject 
-      ? getRandomQuestions(questionCount, selectedSubject)
-      : getRandomQuestions(questionCount);
+      ? getRandomQuestionsLocal(questionCount, selectedSubject)
+      : getRandomQuestionsLocal(questionCount);
     
     if (questions.length === 0) {
       alert('या विषयात पुरेसे प्रश्न उपलब्ध नाहीत!');
@@ -54,7 +80,7 @@ export default function PracticePage() {
 
           <div className="subject-info">
             <p>📚 विषय: <strong>{subject?.name}</strong></p>
-            <p>📝 उपलब्ध प्रश्न: <strong>{getQuestionsBySubject(selectedSubject).length}</strong></p>
+            <p>📝 उपलब्ध प्रश्न: <strong>{getQuestionsBySubjectLocal(selectedSubject).length}</strong></p>
           </div>
 
           <button className="start-quiz-btn" onClick={startQuiz}>
@@ -92,7 +118,7 @@ export default function PracticePage() {
         <button 
           className="start-quiz-btn full-width" 
           onClick={() => {
-            const questions = getRandomQuestions(questionCount);
+            const questions = getRandomQuestionsLocal(questionCount);
             sessionStorage.setItem('quizData', JSON.stringify({
               questions,
               type: 'practice',
@@ -123,7 +149,7 @@ export default function PracticePage() {
             <div className="subject-info">
               <h4>{subject.name}</h4>
               <span className="question-count">
-                {getQuestionsBySubject(subject.id).length} प्रश्न
+                {getQuestionsBySubjectLocal(subject.id).length} प्रश्न
               </span>
             </div>
           </div>

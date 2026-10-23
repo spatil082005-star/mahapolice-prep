@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { subjects } from '../data/questions';
-import { Plus, Trash2, BookOpen, Users, FileText, CheckCircle } from 'lucide-react';
+import { extractTextFromPDF, parseQuestionsFromText } from '../utils/pdfParser';
+import { Plus, Trash2, BookOpen, Users, FileText, CheckCircle, Upload, FileUp } from 'lucide-react';
 
-type Tab = 'create' | 'my-tests' | 'students';
+type Tab = 'create' | 'pdf-upload' | 'my-tests' | 'students';
 
 export default function TeacherDashboard() {
   const navigate = useNavigate();
@@ -24,6 +25,15 @@ export default function TeacherDashboard() {
   const [difficulty, setDifficulty] = useState<'सोपे' | 'मध्यम' | 'कठीण'>('सोपे');
   const [successMsg, setSuccessMsg] = useState('');
   const [error, setError] = useState('');
+  
+  // PDF Upload state
+  const [pdfLoading, setPdfLoading] = useState(false);
+  const [pdfQuestions, setPdfQuestions] = useState<any[]>([]);
+  const [pdfSelected, setPdfSelected] = useState<string[]>([]);
+  const [pdfSubject, setPdfSubject] = useState('reasoning');
+  const [pdfDifficulty, setPdfDifficulty] = useState<'सोपे' | 'मध्यम' | 'कठीण'>('सोपे');
+  const [pdfTopic, setPdfTopic] = useState('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const students = users.filter(u => u.role === 'student');
   const myQuestions = getTeacherQuestions();
@@ -67,6 +77,79 @@ export default function TeacherDashboard() {
     }
   };
 
+  // PDF Upload handlers
+  const handlePdfUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    setError('');
+    setPdfLoading(true);
+    setPdfQuestions([]);
+    setPdfSelected([]);
+    
+    try {
+      const text = await extractTextFromPDF(file);
+      const parsed = parseQuestionsFromText(text);
+      
+      if (parsed.length === 0) {
+        setError('PDF मधून कोणतेही प्रश्न सापडले नाहीत. कृपया योग्य format वापरा.');
+      } else {
+        setPdfQuestions(parsed);
+        setPdfSelected(parsed.map((_, i) => i.toString()));
+        setSuccessMsg(`✅ ${parsed.length} प्रश्न सापडले!`);
+        setTimeout(() => setSuccessMsg(''), 3000);
+      }
+    } catch (err) {
+      setError('PDF वाचण्यात अडचण आली. कृपया दुसरे PDF वापरा.');
+    }
+    
+    setPdfLoading(false);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  const togglePdfQuestion = (idx: string) => {
+    setPdfSelected(prev => 
+      prev.includes(idx) ? prev.filter(i => i !== idx) : [...prev, idx]
+    );
+  };
+
+  const selectAllPdf = () => {
+    setPdfSelected(pdfQuestions.map((_, i) => i.toString()));
+  };
+
+  const deselectAllPdf = () => {
+    setPdfSelected([]);
+  };
+
+  const importSelectedPdfQuestions = () => {
+    if (pdfSelected.length === 0) {
+      setError('किमान एक प्रश्न निवडा');
+      return;
+    }
+    
+    let imported = 0;
+    pdfSelected.forEach(idx => {
+      const q = pdfQuestions[parseInt(idx)];
+      if (q && q.options && q.options.length === 4) {
+        addTeacherQuestion({
+          subject: pdfSubject,
+          topic: pdfTopic || 'pdf-import',
+          question: q.question,
+          options: q.options,
+          correct: q.correct,
+          explanation: q.explanation || '',
+          difficulty: pdfDifficulty,
+        });
+        imported++;
+      }
+    });
+    
+    setPdfQuestions([]);
+    setPdfSelected([]);
+    setSuccessMsg(`✅ ${imported} प्रश्न यशस्वीरित्या import केले!`);
+    setTimeout(() => setSuccessMsg(''), 3000);
+  };
+
   const getSubjectName = (id: string) => subjects.find(s => s.id === id)?.name || id;
   const getSubjectIcon = (id: string) => subjects.find(s => s.id === id)?.icon || '📝';
 
@@ -87,7 +170,11 @@ export default function TeacherDashboard() {
       <div className="teacher-tabs">
         <button className={`teacher-tab ${activeTab === 'create' ? 'active' : ''}`} onClick={() => setActiveTab('create')}>
           <Plus size={18} />
-          <span>चाचणी बनवा</span>
+          <span>प्रश्न जोडा</span>
+        </button>
+        <button className={`teacher-tab ${activeTab === 'pdf-upload' ? 'active' : ''}`} onClick={() => setActiveTab('pdf-upload')}>
+          <FileUp size={18} />
+          <span>PDF Upload</span>
         </button>
         <button className={`teacher-tab ${activeTab === 'my-tests' ? 'active' : ''}`} onClick={() => setActiveTab('my-tests')}>
           <FileText size={18} />
@@ -210,6 +297,119 @@ export default function TeacherDashboard() {
                 प्रश्न जोडा
               </button>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* PDF Upload Tab */}
+      {activeTab === 'pdf-upload' && (
+        <div className="teacher-content">
+          <div className="create-form-card">
+            <h3 className="form-title">📄 PDF वरून प्रश्न Import करा</h3>
+            
+            {successMsg && <div className="success-msg">{successMsg}</div>}
+            {error && <div className="error-msg">⚠️ {error}</div>}
+
+            {/* PDF Format Guide */}
+            <div className="pdf-format-guide">
+              <h4>📋 PDF Format:</h4>
+              <pre className="format-example">{`Q1. प्रश्न येथे लिहा?
+A) पर्याय अ
+B) पर्याय ब  
+C) पर्याय क
+D) पर्याय ड
+Answer: A
+Explanation: स्पष्टीकरण येथे
+
+Q2. दुसरा प्रश्न?
+...`}</pre>
+            </div>
+
+            {/* Upload Area */}
+            <div className="pdf-upload-area">
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".pdf"
+                onChange={handlePdfUpload}
+                className="pdf-file-input"
+                id="pdf-upload"
+              />
+              <label htmlFor="pdf-upload" className="pdf-upload-btn">
+                {pdfLoading ? (
+                  <><span className="loading-spinner">⏳</span> PDF वाचत आहे...</>
+                ) : (
+                  <><Upload size={20} /> PDF निवडा</>
+                )}
+              </label>
+            </div>
+
+            {/* PDF Questions Preview */}
+            {pdfQuestions.length > 0 && (
+              <div className="pdf-preview-section">
+                <div className="pdf-preview-header">
+                  <h4>📝 सापडलेले प्रश्न ({pdfQuestions.length})</h4>
+                  <div className="pdf-select-actions">
+                    <button className="select-all-btn" onClick={selectAllPdf}>सर्व निवडा</button>
+                    <button className="deselect-all-btn" onClick={deselectAllPdf}>सर्व काढा</button>
+                  </div>
+                </div>
+
+                {/* Import Settings */}
+                <div className="import-settings">
+                  <div className="form-group">
+                    <label>विषय</label>
+                    <select value={pdfSubject} onChange={(e) => setPdfSubject(e.target.value)} className="form-select">
+                      {subjects.map(s => (
+                        <option key={s.id} value={s.id}>{s.icon} {s.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label>टॉपिक</label>
+                    <input type="text" placeholder="उदा. नातेसंबंध" value={pdfTopic} onChange={(e) => setPdfTopic(e.target.value)} className="form-input" />
+                  </div>
+                  <div className="form-group">
+                    <label>कठीणताई</label>
+                    <div className="difficulty-options">
+                      {(['सोपे', 'मध्यम', 'कठीण'] as const).map(d => (
+                        <button key={d} type="button" className={`diff-btn ${pdfDifficulty === d ? 'active' : ''}`} onClick={() => setPdfDifficulty(d)}>{d}</button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Questions List */}
+                <div className="pdf-questions-list">
+                  {pdfQuestions.map((q, idx) => (
+                    <div key={idx} className={`pdf-question-item ${pdfSelected.includes(idx.toString()) ? 'selected' : ''}`}>
+                      <button
+                        type="button"
+                        className={`pdf-check-btn ${pdfSelected.includes(idx.toString()) ? 'checked' : ''}`}
+                        onClick={() => togglePdfQuestion(idx.toString())}
+                      >
+                        {pdfSelected.includes(idx.toString()) ? <CheckCircle size={18} /> : <span>{idx + 1}</span>}
+                      </button>
+                      <div className="pdf-q-content">
+                        <p className="pdf-q-text">{q.question}</p>
+                        <div className="pdf-q-options">
+                          {q.options?.map((opt: string, i: number) => (
+                            <span key={i} className={`pdf-opt ${i === q.correct ? 'correct' : ''}`}>
+                              {String.fromCharCode(65 + i)}. {opt}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <button className="submit-btn import-btn" onClick={importSelectedPdfQuestions}>
+                  <FileUp size={18} />
+                  {pdfSelected.length} प्रश्न Import करा
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}

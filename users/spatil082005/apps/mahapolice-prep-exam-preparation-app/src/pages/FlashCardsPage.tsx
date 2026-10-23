@@ -1,17 +1,27 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { questions, subjects } from '../data/questions';
+import { questions as builtInQuestions, subjects } from '../data/questions';
+import { useApp } from '../context/AppContext';
 import { ArrowLeft, RotateCcw, ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function FlashCardsPage() {
   const navigate = useNavigate();
+  const { teacherQuestions } = useApp();
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
   const [currentCard, setCurrentCard] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
 
+  const allQuestions = useMemo(() => {
+    const teacherQs = teacherQuestions.map(tq => ({
+      id: tq.id, subject: tq.subject, topic: tq.topic, question: tq.question,
+      options: tq.options, correct: tq.correct, explanation: tq.explanation, difficulty: tq.difficulty,
+    }));
+    return [...builtInQuestions, ...teacherQs];
+  }, [teacherQuestions]);
+
   const filteredQuestions = selectedSubject 
-    ? questions.filter(q => q.subject === selectedSubject)
-    : questions;
+    ? allQuestions.filter(q => q.subject === selectedSubject)
+    : allQuestions;
 
   const currentQuestion = filteredQuestions[currentCard];
 
@@ -55,7 +65,7 @@ export default function FlashCardsPage() {
               <span className="flash-subject-icon">{subject.icon}</span>
               <span className="flash-subject-name">{subject.name}</span>
               <span className="flash-subject-count">
-                {questions.filter(q => q.subject === subject.id).length} कार्ड्स
+                {allQuestions.filter(q => q.subject === subject.id).length} कार्ड्स
               </span>
             </button>
           ))}
@@ -65,7 +75,7 @@ export default function FlashCardsPage() {
           >
             <span className="flash-subject-icon">📚</span>
             <span className="flash-subject-name">सर्व विषय</span>
-            <span className="flash-subject-count">{questions.length} कार्ड्स</span>
+            <span className="flash-subject-count">{allQuestions.length} कार्ड्स</span>
           </button>
         </div>
       </div>
@@ -75,8 +85,8 @@ export default function FlashCardsPage() {
   if (selectedSubject === 'all' || selectedSubject) {
     const actualSubject = selectedSubject === 'all' ? null : selectedSubject;
     const allCards = actualSubject 
-      ? questions.filter(q => q.subject === actualSubject)
-      : questions;
+      ? allQuestions.filter(q => q.subject === actualSubject)
+      : allQuestions;
 
     return (
       <div className="app-container">

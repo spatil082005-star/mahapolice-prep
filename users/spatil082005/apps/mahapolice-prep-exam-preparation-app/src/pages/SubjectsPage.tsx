@@ -1,12 +1,26 @@
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { subjects, getQuestionsBySubject, getQuestionsByTopic } from '../data/questions';
+import { subjects, getQuestionsByTopic, questions as builtInQuestions } from '../data/questions';
+import { useApp } from '../context/AppContext';
 import { ArrowLeft, BookOpen } from 'lucide-react';
 
 export default function SubjectsPage() {
   const navigate = useNavigate();
+  const { teacherQuestions } = useApp();
+
+  const allQuestions = useMemo(() => {
+    const teacherQs = teacherQuestions.map(tq => ({
+      id: tq.id, subject: tq.subject, topic: tq.topic, question: tq.question,
+      options: tq.options, correct: tq.correct, explanation: tq.explanation, difficulty: tq.difficulty,
+    }));
+    return [...builtInQuestions, ...teacherQs];
+  }, [teacherQuestions]);
+
+  const getQuestionsBySubjectLocal = (subjectId: string) => allQuestions.filter(q => q.subject === subjectId);
+  const getQuestionsByTopicLocal = (topic: string) => allQuestions.filter(q => q.topic === topic);
 
   const startTopicPractice = (subjectId: string, topic: string) => {
-    const questions = getQuestionsByTopic(topic);
+    const questions = getQuestionsByTopicLocal(topic);
     if (questions.length === 0) {
       alert('या टॉपिकवर पुरेसे प्रश्न उपलब्ध नाहीत!');
       return;
@@ -35,13 +49,13 @@ export default function SubjectsPage() {
               <span className="subject-icon-large">{subject.icon}</span>
               <div>
                 <h3>{subject.name}</h3>
-                <p>{subject.name} • {getQuestionsBySubject(subject.id).length} प्रश्न</p>
+                <p>{subject.name} • {getQuestionsBySubjectLocal(subject.id).length} प्रश्न</p>
               </div>
             </div>
             
             <div className="topics-grid">
               {subject.topics.map(topic => {
-                const topicQuestions = getQuestionsByTopic(topic);
+                const topicQuestions = getQuestionsByTopicLocal(topic);
                 return (
                   <button
                     key={topic}
@@ -60,7 +74,7 @@ export default function SubjectsPage() {
               className="subject-practice-btn"
               style={{ background: subject.color }}
               onClick={() => {
-                const questions = getQuestionsBySubject(subject.id);
+                const questions = getQuestionsBySubjectLocal(subject.id);
                 if (questions.length === 0) {
                   alert('पुरेसे प्रश्न उपलब्ध नाहीत!');
                   return;
