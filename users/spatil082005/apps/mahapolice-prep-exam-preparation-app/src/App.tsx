@@ -14,6 +14,7 @@ import SubjectsPage from './pages/SubjectsPage';
 import AdminDashboard from './pages/AdminDashboard';
 import TeacherDashboard from './pages/TeacherDashboard';
 import ProfilePage from './pages/ProfilePage';
+import VoiceAssistant from './components/VoiceAssistant';
 import './styles.css';
 
 function getHomePath(role: string): string {
@@ -38,32 +39,35 @@ function AppRoutes() {
   const redirectPath = currentUser ? getHomePath(currentUser.role) : '/login';
   
   return (
-    <Routes>
-      <Route path="/login" element={currentUser ? <Navigate to={redirectPath} replace /> : <LoginPage />} />
-      
-      {/* Student Routes */}
-      <Route path="/" element={<ProtectedRoute allowedRoles={['student']}><HomePage /></ProtectedRoute>} />
-      <Route path="/practice" element={<ProtectedRoute allowedRoles={['student']}><PracticePage /></ProtectedRoute>} />
-      <Route path="/quiz" element={<ProtectedRoute allowedRoles={['student']}><QuizPage /></ProtectedRoute>} />
-      <Route path="/quiz-result" element={<ProtectedRoute allowedRoles={['student']}><QuizResultPage /></ProtectedRoute>} />
-      <Route path="/mock-tests" element={<ProtectedRoute allowedRoles={['student']}><MockTestPage /></ProtectedRoute>} />
-      <Route path="/timer-quiz" element={<ProtectedRoute allowedRoles={['student']}><TimerQuizPage /></ProtectedRoute>} />
-      <Route path="/progress" element={<ProtectedRoute allowedRoles={['student']}><ProgressPage /></ProtectedRoute>} />
-      <Route path="/flash-cards" element={<ProtectedRoute allowedRoles={['student']}><FlashCardsPage /></ProtectedRoute>} />
-      <Route path="/attendance" element={<ProtectedRoute allowedRoles={['student']}><AttendancePage /></ProtectedRoute>} />
-      <Route path="/subjects" element={<ProtectedRoute allowedRoles={['student']}><SubjectsPage /></ProtectedRoute>} />
-      
-      {/* Admin Routes */}
-      <Route path="/admin" element={<ProtectedRoute allowedRoles={['admin']}><AdminDashboard /></ProtectedRoute>} />
-      
-      {/* Teacher Routes */}
-      <Route path="/teacher" element={<ProtectedRoute allowedRoles={['teacher']}><TeacherDashboard /></ProtectedRoute>} />
-      
-      {/* Profile Route - all roles */}
-      <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
-      
-      <Route path="*" element={<Navigate to={currentUser ? getHomePath(currentUser.role) : '/login'} replace />} />
-    </Routes>
+    <>
+      <Routes>
+        <Route path="/login" element={currentUser ? <Navigate to={redirectPath} replace /> : <LoginPage />} />
+        
+        {/* Student Routes */}
+        <Route path="/" element={<ProtectedRoute allowedRoles={['student']}><HomePage /></ProtectedRoute>} />
+        <Route path="/practice" element={<ProtectedRoute allowedRoles={['student']}><PracticePage /></ProtectedRoute>} />
+        <Route path="/quiz" element={<ProtectedRoute allowedRoles={['student']}><QuizPage /></ProtectedRoute>} />
+        <Route path="/quiz-result" element={<ProtectedRoute allowedRoles={['student']}><QuizResultPage /></ProtectedRoute>} />
+        <Route path="/mock-tests" element={<ProtectedRoute allowedRoles={['student']}><MockTestPage /></ProtectedRoute>} />
+        <Route path="/timer-quiz" element={<ProtectedRoute allowedRoles={['student']}><TimerQuizPage /></ProtectedRoute>} />
+        <Route path="/progress" element={<ProtectedRoute allowedRoles={['student']}><ProgressPage /></ProtectedRoute>} />
+        <Route path="/flash-cards" element={<ProtectedRoute allowedRoles={['student']}><FlashCardsPage /></ProtectedRoute>} />
+        <Route path="/attendance" element={<ProtectedRoute allowedRoles={['student']}><AttendancePage /></ProtectedRoute>} />
+        <Route path="/subjects" element={<ProtectedRoute allowedRoles={['student']}><SubjectsPage /></ProtectedRoute>} />
+        
+        {/* Admin Routes */}
+        <Route path="/admin" element={<ProtectedRoute allowedRoles={['admin']}><AdminDashboard /></ProtectedRoute>} />
+        
+        {/* Teacher Routes */}
+        <Route path="/teacher" element={<ProtectedRoute allowedRoles={['teacher']}><TeacherDashboard /></ProtectedRoute>} />
+        
+        {/* Profile Route - all roles */}
+        <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+        
+        <Route path="*" element={<Navigate to={currentUser ? getHomePath(currentUser.role) : '/login'} replace />} />
+      </Routes>
+      {currentUser && <VoiceAssistant />}
+    </>
   );
 }
 
