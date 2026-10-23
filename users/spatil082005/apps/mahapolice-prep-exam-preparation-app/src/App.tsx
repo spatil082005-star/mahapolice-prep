@@ -13,6 +13,7 @@ import AttendancePage from './pages/AttendancePage';
 import SubjectsPage from './pages/SubjectsPage';
 import AdminDashboard from './pages/AdminDashboard';
 import TeacherDashboard from './pages/TeacherDashboard';
+import ProfilePage from './pages/ProfilePage';
 import './styles.css';
 
 function getHomePath(role: string): string {
@@ -57,6 +58,9 @@ function AppRoutes() {
       
       {/* Teacher Routes */}
       <Route path="/teacher" element={<ProtectedRoute allowedRoles={['teacher']}><TeacherDashboard /></ProtectedRoute>} />
+      
+      {/* Profile Route - all roles */}
+      <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
       
       <Route path="*" element={<Navigate to={currentUser ? getHomePath(currentUser.role) : '/login'} replace />} />
     </Routes>

@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp, UserRole } from '../context/AppContext';
-import { Shield, Mail, Lock, Phone, User, Eye, EyeOff, Camera, Calendar, CreditCard } from 'lucide-react';
+import { Shield, Mail, Lock, Phone, User, Eye, EyeOff, Camera, Calendar, CreditCard, Ruler, Scale, Droplet, MapPin, BookOpen } from 'lucide-react';
 
 export default function LoginPage() {
   const [mode, setMode] = useState<'role-select' | 'login' | 'signup'>('role-select');
@@ -15,10 +15,17 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   
-  // New fields
+  // Registration fields
   const [photo, setPhoto] = useState<string>('');
   const [dob, setDob] = useState('');
   const [aadhar, setAadhar] = useState('');
+  const [height, setHeight] = useState('');
+  const [weight, setWeight] = useState('');
+  const [bloodGroup, setBloodGroup] = useState('');
+  const [address, setAddress] = useState('');
+  const [fatherName, setFatherName] = useState('');
+  const [motherName, setMotherName] = useState('');
+  const [qualification, setQualification] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const navigate = useNavigate();
@@ -84,7 +91,7 @@ export default function LoginPage() {
     }
     setLoading(true);
     setTimeout(() => {
-      const result = signup(name, email, password, phone, selectedRole as 'teacher' | 'student', photo, dob, aadhar);
+      const result = signup(name, email, password, phone, selectedRole as 'teacher' | 'student', photo, dob, aadhar, height, weight, bloodGroup, address, fatherName, motherName, qualification);
       if (result.success) {
         if (selectedRole === 'teacher') navigate('/teacher');
         else navigate('/');
@@ -315,6 +322,108 @@ export default function LoginPage() {
               className="login-input"
               maxLength={12}
             />
+          </div>
+
+          {/* Section divider */}
+          <div className="signup-section-divider">
+            <span>📋 वैयक्तिक माहिती</span>
+          </div>
+
+          {/* Height & Weight */}
+          <div className="signup-row-2">
+            <div className="input-group">
+              <Ruler size={18} className="input-icon" />
+              <input
+                type="text"
+                placeholder="उंची (cm)"
+                value={height}
+                onChange={(e) => setHeight(e.target.value)}
+                className="login-input"
+              />
+            </div>
+            <div className="input-group">
+              <Scale size={18} className="input-icon" />
+              <input
+                type="text"
+                placeholder="वजन (kg)"
+                value={weight}
+                onChange={(e) => setWeight(e.target.value)}
+                className="login-input"
+              />
+            </div>
+          </div>
+
+          {/* Blood Group */}
+          <div className="input-group">
+            <Droplet size={20} className="input-icon" />
+            <select
+              value={bloodGroup}
+              onChange={(e) => setBloodGroup(e.target.value)}
+              className="login-input"
+            >
+              <option value="">रक्तगट निवडा</option>
+              <option value="A+">A+</option>
+              <option value="A-">A-</option>
+              <option value="B+">B+</option>
+              <option value="B-">B-</option>
+              <option value="AB+">AB+</option>
+              <option value="AB-">AB-</option>
+              <option value="O+">O+</option>
+              <option value="O-">O-</option>
+            </select>
+          </div>
+
+          {/* Father & Mother Name */}
+          <div className="signup-row-2">
+            <div className="input-group">
+              <User size={18} className="input-icon" />
+              <input
+                type="text"
+                placeholder="वडिलांचे नाव"
+                value={fatherName}
+                onChange={(e) => setFatherName(e.target.value)}
+                className="login-input"
+              />
+            </div>
+            <div className="input-group">
+              <User size={18} className="input-icon" />
+              <input
+                type="text"
+                placeholder="आईचे नाव"
+                value={motherName}
+                onChange={(e) => setMotherName(e.target.value)}
+                className="login-input"
+              />
+            </div>
+          </div>
+
+          {/* Qualification */}
+          <div className="input-group">
+            <BookOpen size={20} className="input-icon" />
+            <input
+              type="text"
+              placeholder="शैक्षणिक पात्रता (उदा. 12वी, BSc, BE)"
+              value={qualification}
+              onChange={(e) => setQualification(e.target.value)}
+              className="login-input"
+            />
+          </div>
+
+          {/* Address */}
+          <div className="input-group">
+            <MapPin size={20} className="input-icon" />
+            <textarea
+              placeholder="पूर्ण पत्ता"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              className="login-input signup-textarea"
+              rows={2}
+            />
+          </div>
+
+          {/* Section divider */}
+          <div className="signup-section-divider">
+            <span>🔒 सुरक्षा</span>
           </div>
           
           <div className="input-group">

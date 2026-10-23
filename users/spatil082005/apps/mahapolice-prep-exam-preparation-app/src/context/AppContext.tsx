@@ -14,6 +14,13 @@ export interface User {
   dob?: string;
   aadhar?: string;
   rollNo?: string;
+  height?: string;
+  weight?: string;
+  bloodGroup?: string;
+  address?: string;
+  fatherName?: string;
+  motherName?: string;
+  qualification?: string;
   createdAt: string;
 }
 
@@ -69,7 +76,7 @@ interface AppState {
 interface AppContextType extends AppState {
   // Auth
   login: (email: string, password: string) => { success: boolean; error?: string };
-  signup: (name: string, email: string, password: string, phone: string, role: 'teacher' | 'student', photo?: string, dob?: string, aadhar?: string) => { success: boolean; error?: string };
+  signup: (name: string, email: string, password: string, phone: string, role: 'teacher' | 'student', photo?: string, dob?: string, aadhar?: string, height?: string, weight?: string, bloodGroup?: string, address?: string, fatherName?: string, motherName?: string, qualification?: string) => { success: boolean; error?: string };
   logout: () => void;
   // Quiz
   addQuizResult: (result: Omit<QuizResult, 'id' | 'date' | 'userId'>) => void;
@@ -190,7 +197,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return `${prefix}${String(maxNum + 1).padStart(3, '0')}`;
   };
 
-  const signup = (name: string, email: string, password: string, phone: string, role: 'teacher' | 'student', photo?: string, dob?: string, aadhar?: string): { success: boolean; error?: string } => {
+  const signup = (
+    name: string, email: string, password: string, phone: string, 
+    role: 'teacher' | 'student', photo?: string, dob?: string, aadhar?: string,
+    height?: string, weight?: string, bloodGroup?: string, address?: string,
+    fatherName?: string, motherName?: string, qualification?: string
+  ): { success: boolean; error?: string } => {
     const exists = state.users.find(u => u.email === email);
     if (exists) {
       return { success: false, error: 'या ईमेलने आधीच खाते आहे' };
@@ -206,6 +218,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
       dob,
       aadhar,
       rollNo: generateRollNo(role),
+      height,
+      weight,
+      bloodGroup,
+      address,
+      fatherName,
+      motherName,
+      qualification,
       createdAt: new Date().toISOString(),
     };
     setState(prev => ({
