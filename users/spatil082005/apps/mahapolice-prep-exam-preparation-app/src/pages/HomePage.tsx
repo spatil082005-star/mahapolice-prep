@@ -31,11 +31,14 @@ export default function HomePage() {
       {/* Header */}
       <header className="app-header">
         <div className="header-left">
-          <h1 className="header-title">नमस्कार, {currentUser?.name?.split(' ')[0] || 'विद्यार्थी'} 🙏</h1>
-          <p className="header-subtitle">आजची तयारी सुरू करूया!</p>
+          <img src="/logo.svg" alt="SAKSHI OS" className="header-logo" />
+          <div>
+            <h1 className="header-title">नमस्कार, {currentUser?.name?.split(' ')[0] || 'विद्यार्थी'} 🙏</h1>
+            <p className="header-subtitle">आजची तयारी सुरू करूया!</p>
+          </div>
         </div>
         <button className="logout-btn" onClick={logout} title="बाहेर पडा">
-          🚪
+          
         </button>
       </header>
 

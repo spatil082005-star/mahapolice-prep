@@ -74,8 +74,11 @@ export default function TeacherDashboard() {
     <div className="app-container">
       <header className="app-header teacher-header">
         <div className="header-left">
-          <h1 className="header-title">👨‍🏫 शिक्षक पॅनल</h1>
-          <p className="header-subtitle">नमस्कार, {currentUser?.name}</p>
+          <img src="/logo.svg" alt="SAKSHI OS" className="header-logo" />
+          <div>
+            <h1 className="header-title">👨‍🏫 शिक्षक पॅनल</h1>
+            <p className="header-subtitle">नमस्कार, {currentUser?.name}</p>
+          </div>
         </div>
         <button className="logout-btn" onClick={logout} title="बाहेर पडा">🚪</button>
       </header>

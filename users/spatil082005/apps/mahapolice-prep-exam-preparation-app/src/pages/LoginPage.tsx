@@ -98,11 +98,12 @@ export default function LoginPage() {
       <div className="login-page">
         <div className="login-container">
           <div className="login-header">
-            <div className="login-logo">
-              <Shield size={48} className="logo-icon" />
+            <div className="login-logo-container">
+              <img src="/logo.svg" alt="SAKSHI OS Logo" className="login-logo-img" />
             </div>
             <h1 className="login-title">SAKSHI OS</h1>
-            <p className="login-subtitle">संपूर्ण परीक्षा तयारी प्रणाली</p>
+            <p className="login-subtitle">Police & Protection</p>
+            <p className="login-subtitle-small">संपूर्ण परीक्षा तयारी प्रणाली</p>
           </div>
 
           <div className="role-selection">

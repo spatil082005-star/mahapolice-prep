@@ -19,8 +19,11 @@ export default function AdminDashboard() {
     <div className="app-container">
       <header className="app-header admin-header">
         <div className="header-left">
-          <h1 className="header-title">👑 प्रशासक पॅनल</h1>
-          <p className="header-subtitle">SAKSHI OS व्यवस्थापन</p>
+          <img src="/logo.svg" alt="SAKSHI OS" className="header-logo" />
+          <div>
+            <h1 className="header-title">👑 प्रशासक पॅनल</h1>
+            <p className="header-subtitle">SAKSHI OS व्यवस्थापन</p>
+          </div>
         </div>
         <button className="logout-btn" onClick={logout} title="बाहेर पडा">🚪</button>
       </header>
