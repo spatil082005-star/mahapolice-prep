@@ -174,11 +174,15 @@ export default function AdminDashboard() {
             return (
               <div key={teacher.id} className="user-card teacher-card">
                 <div className="user-card-header">
-                  <div className="user-avatar teacher-avatar">‍🏫</div>
+                  {teacher.photo ? (
+                    <img src={teacher.photo} alt={teacher.name} className="user-photo-small" />
+                  ) : (
+                    <div className="user-avatar teacher-avatar">‍🏫</div>
+                  )}
                   <div className="user-info">
-                    <h4>{teacher.name}</h4>
+                    <h4>{teacher.name} {teacher.rollNo && <span className="roll-badge teacher">{teacher.rollNo}</span>}</h4>
                     <p>{teacher.email}</p>
-                    <span className="user-meta">📱 {teacher.phone}</span>
+                    <span className="user-meta">📱 {teacher.phone} {teacher.dob && `• 🎂 ${teacher.dob}`}</span>
                   </div>
                   <button className="delete-btn" onClick={() => handleDelete(teacher.id, teacher.name)}>
                     <Trash2 size={16} />
@@ -217,11 +221,15 @@ export default function AdminDashboard() {
             return (
               <div key={student.id} className="user-card student-card">
                 <div className="user-card-header">
-                  <div className="user-avatar student-avatar">🎓</div>
+                  {student.photo ? (
+                    <img src={student.photo} alt={student.name} className="user-photo-small" />
+                  ) : (
+                    <div className="user-avatar student-avatar">🎓</div>
+                  )}
                   <div className="user-info">
-                    <h4>{student.name}</h4>
+                    <h4>{student.name} {student.rollNo && <span className="roll-badge">{student.rollNo}</span>}</h4>
                     <p>{student.email}</p>
-                    <span className="user-meta"> {student.phone}</span>
+                    <span className="user-meta">📱 {student.phone} {student.dob && `• 🎂 ${student.dob}`}</span>
                   </div>
                   <button className="delete-btn" onClick={() => handleDelete(student.id, student.name)}>
                     <Trash2 size={16} />

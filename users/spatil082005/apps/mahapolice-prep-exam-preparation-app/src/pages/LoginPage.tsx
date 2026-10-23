@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp, UserRole } from '../context/AppContext';
-import { Shield, Mail, Lock, Phone, User, Eye, EyeOff } from 'lucide-react';
+import { Shield, Mail, Lock, Phone, User, Eye, EyeOff, Camera, Calendar, CreditCard } from 'lucide-react';
 
 export default function LoginPage() {
   const [mode, setMode] = useState<'role-select' | 'login' | 'signup'>('role-select');
@@ -14,6 +14,13 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  
+  // New fields
+  const [photo, setPhoto] = useState<string>('');
+  const [dob, setDob] = useState('');
+  const [aadhar, setAadhar] = useState('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  
   const navigate = useNavigate();
   const { login, signup } = useApp();
 
@@ -40,6 +47,22 @@ export default function LoginPage() {
     }, 500);
   };
 
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    if (file.size > 2 * 1024 * 1024) {
+      setError('फोटो 2MB पेक्षा लहान असावा');
+      return;
+    }
+    
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPhoto(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleSignup = (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -55,9 +78,13 @@ export default function LoginPage() {
       setError('मोबाईल नंबर 10 अंकांचा असावा');
       return;
     }
+    if (aadhar && !/^\d{12}$/.test(aadhar)) {
+      setError('आधार क्रमांक 12 अंकांचा असावा');
+      return;
+    }
     setLoading(true);
     setTimeout(() => {
-      const result = signup(name, email, password, phone, selectedRole as 'teacher' | 'student');
+      const result = signup(name, email, password, phone, selectedRole as 'teacher' | 'student', photo, dob, aadhar);
       if (result.success) {
         if (selectedRole === 'teacher') navigate('/teacher');
         else navigate('/');
@@ -79,7 +106,7 @@ export default function LoginPage() {
   const getRoleIcon = (role: UserRole) => {
     switch (role) {
       case 'admin': return '👑';
-      case 'teacher': return '👨‍🏫';
+      case 'teacher': return '👨🏫';
       case 'student': return '🎓';
     }
   };
@@ -177,7 +204,7 @@ export default function LoginPage() {
             </div>
 
             <button type="submit" className="login-btn" disabled={loading} style={{ background: `linear-gradient(135deg, ${getRoleColor(selectedRole!)}, ${getRoleColor(selectedRole!)}cc)` }}>
-              {loading ? '⏳ लोड होत आहे...' : 'लॉगिन करा'}
+              {loading ? ' लोड होत आहे...' : 'लॉगिन करा'}
             </button>
           </form>
 
@@ -202,9 +229,31 @@ export default function LoginPage() {
           <p className="login-subtitle">SAKSHI OS मध्ये नोंदणी करा</p>
         </div>
 
-        <form className="login-form" onSubmit={handleSignup}>
+        <form className="login-form signup-form" onSubmit={handleSignup}>
           {error && <div className="error-msg">⚠️ {error}</div>}
           
+          {/* Photo Upload */}
+          <div className="photo-upload-section">
+            <div className="photo-preview" onClick={() => fileInputRef.current?.click()}>
+              {photo ? (
+                <img src={photo} alt="Profile" className="photo-img" />
+              ) : (
+                <div className="photo-placeholder">
+                  <Camera size={32} color="#888" />
+                  <span>फोटो टाका</span>
+                </div>
+              )}
+            </div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handlePhotoUpload}
+              className="photo-input"
+            />
+            <p className="photo-hint">फोटो वर क्लिक करा (max 2MB)</p>
+          </div>
+
           <div className="input-group">
             <User size={20} className="input-icon" />
             <input
@@ -239,6 +288,32 @@ export default function LoginPage() {
               className="login-input"
               maxLength={10}
               required
+            />
+          </div>
+
+          {/* DOB */}
+          <div className="input-group">
+            <Calendar size={20} className="input-icon" />
+            <input
+              type="date"
+              placeholder="जन्म तारीख"
+              value={dob}
+              onChange={(e) => setDob(e.target.value)}
+              className="login-input"
+              required
+            />
+          </div>
+
+          {/* Aadhar */}
+          <div className="input-group">
+            <CreditCard size={20} className="input-icon" />
+            <input
+              type="text"
+              placeholder="आधार क्रमांक (12 अंक)"
+              value={aadhar}
+              onChange={(e) => setAadhar(e.target.value.replace(/\D/g, '').slice(0, 12))}
+              className="login-input"
+              maxLength={12}
             />
           </div>
           

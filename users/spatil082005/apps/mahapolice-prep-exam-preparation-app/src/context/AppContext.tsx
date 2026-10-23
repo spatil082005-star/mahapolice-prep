@@ -10,6 +10,10 @@ export interface User {
   password: string;
   phone: string;
   role: UserRole;
+  photo?: string;
+  dob?: string;
+  aadhar?: string;
+  rollNo?: string;
   createdAt: string;
 }
 
@@ -65,7 +69,7 @@ interface AppState {
 interface AppContextType extends AppState {
   // Auth
   login: (email: string, password: string) => { success: boolean; error?: string };
-  signup: (name: string, email: string, password: string, phone: string, role: 'teacher' | 'student') => { success: boolean; error?: string };
+  signup: (name: string, email: string, password: string, phone: string, role: 'teacher' | 'student', photo?: string, dob?: string, aadhar?: string) => { success: boolean; error?: string };
   logout: () => void;
   // Quiz
   addQuizResult: (result: Omit<QuizResult, 'id' | 'date' | 'userId'>) => void;
@@ -176,7 +180,17 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return { success: false, error: 'ईमेल किंवा पासवर्ड चुकीचा आहे' };
   };
 
-  const signup = (name: string, email: string, password: string, phone: string, role: 'teacher' | 'student'): { success: boolean; error?: string } => {
+  const generateRollNo = (role: 'teacher' | 'student'): string => {
+    const prefix = role === 'student' ? 'SK' : 'TK';
+    const existingUsers = state.users.filter(u => u.role === role && u.rollNo);
+    const maxNum = existingUsers.reduce((max, u) => {
+      const num = parseInt(u.rollNo!.replace(prefix, ''));
+      return num > max ? num : max;
+    }, 0);
+    return `${prefix}${String(maxNum + 1).padStart(3, '0')}`;
+  };
+
+  const signup = (name: string, email: string, password: string, phone: string, role: 'teacher' | 'student', photo?: string, dob?: string, aadhar?: string): { success: boolean; error?: string } => {
     const exists = state.users.find(u => u.email === email);
     if (exists) {
       return { success: false, error: 'या ईमेलने आधीच खाते आहे' };
@@ -188,6 +202,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
       password,
       phone,
       role,
+      photo,
+      dob,
+      aadhar,
+      rollNo: generateRollNo(role),
       createdAt: new Date().toISOString(),
     };
     setState(prev => ({

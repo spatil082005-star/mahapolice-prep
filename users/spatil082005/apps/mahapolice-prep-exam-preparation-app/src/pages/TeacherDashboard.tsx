@@ -500,9 +500,13 @@ Q2. दुसरा प्रश्न?
                 return (
                   <div key={student.id} className="user-card student-card">
                     <div className="user-card-header">
-                      <div className="user-avatar student-avatar">🎓</div>
+                      {student.photo ? (
+                        <img src={student.photo} alt={student.name} className="user-photo-small" />
+                      ) : (
+                        <div className="user-avatar student-avatar">🎓</div>
+                      )}
                       <div className="user-info">
-                        <h4>{student.name}</h4>
+                        <h4>{student.name} {student.rollNo && <span className="roll-badge">{student.rollNo}</span>}</h4>
                         <p>{student.email}</p>
                       </div>
                     </div>

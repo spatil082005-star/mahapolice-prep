@@ -34,12 +34,20 @@ export default function HomePage() {
           <img src="/logo.svg" alt="SAKSHI OS" className="header-logo" />
           <div>
             <h1 className="header-title">नमस्कार, {currentUser?.name?.split(' ')[0] || 'विद्यार्थी'} 🙏</h1>
-            <p className="header-subtitle">आजची तयारी सुरू करूया!</p>
+            <p className="header-subtitle">
+              {currentUser?.rollNo && <span className="roll-badge">{currentUser.rollNo}</span>}
+              {' '}आजची तयारी सुरू करूया!
+            </p>
           </div>
         </div>
-        <button className="logout-btn" onClick={logout} title="बाहेर पडा">
-          
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          {currentUser?.photo && (
+            <img src={currentUser.photo} alt="Profile" className="header-user-photo" />
+          )}
+          <button className="logout-btn" onClick={logout} title="बाहेर पडा">
+            🚪
+          </button>
+        </div>
       </header>
 
       {/* Daily Target Card */}
