@@ -1,0 +1,98 @@
+import { useNavigate } from 'react-router-dom';
+import { subjects, getQuestionsBySubject, getQuestionsByTopic } from '../data/questions';
+import { ArrowLeft, BookOpen } from 'lucide-react';
+
+export default function SubjectsPage() {
+  const navigate = useNavigate();
+
+  const startTopicPractice = (subjectId: string, topic: string) => {
+    const questions = getQuestionsByTopic(topic);
+    if (questions.length === 0) {
+      alert('या टॉपिकवर पुरेसे प्रश्न उपलब्ध नाहीत!');
+      return;
+    }
+    sessionStorage.setItem('quizData', JSON.stringify({
+      questions,
+      type: 'practice',
+      subject: subjectId,
+    }));
+    navigate('/quiz');
+  };
+
+  return (
+    <div className="app-container">
+      <header className="page-header">
+        <button className="back-btn" onClick={() => navigate('/')}>
+          <ArrowLeft size={20} />
+        </button>
+        <h2>विषयनिहाय सराव</h2>
+      </header>
+
+      <div className="subjects-list">
+        {subjects.map(subject => (
+          <div key={subject.id} className="subject-detail-card" style={{ borderLeft: `4px solid ${subject.color}` }}>
+            <div className="subject-detail-header">
+              <span className="subject-icon-large">{subject.icon}</span>
+              <div>
+                <h3>{subject.nameMr}</h3>
+                <p>{subject.name} • {getQuestionsBySubject(subject.id).length} प्रश्न</p>
+              </div>
+            </div>
+            
+            <div className="topics-grid">
+              {subject.topics.map(topic => {
+                const topicQuestions = getQuestionsByTopic(topic);
+                return (
+                  <button
+                    key={topic}
+                    className="topic-btn"
+                    onClick={() => startTopicPractice(subject.id, topic)}
+                    disabled={topicQuestions.length === 0}
+                  >
+                    <span className="topic-name">{topic.replace('-', ' ')}</span>
+                    <span className="topic-count">{topicQuestions.length} Q</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            <button
+              className="subject-practice-btn"
+              style={{ background: subject.color }}
+              onClick={() => {
+                const questions = getQuestionsBySubject(subject.id);
+                if (questions.length === 0) {
+                  alert('पुरेसे प्रश्न उपलब्ध नाहीत!');
+                  return;
+                }
+                sessionStorage.setItem('quizData', JSON.stringify({
+                  questions: questions.sort(() => Math.random() - 0.5).slice(0, 25),
+                  type: 'practice',
+                  subject: subject.id,
+                }));
+                navigate('/quiz');
+              }}
+            >
+              {subject.nameMr} सराव सुरू करा →
+            </button>
+          </div>
+        ))}
+      </div>
+
+      <nav className="bottom-nav">
+        <div className="nav-item" onClick={() => navigate('/')}>
+          <BookOpen size={20} /><span>होम</span>
+        </div>
+        <div className="nav-item" onClick={() => navigate('/practice')}>
+          <BookOpen size={20} /><span>सराव</span>
+        </div>
+        <div className="nav-item" onClick={() => navigate('/progress')}>
+          <BookOpen size={20} /><span>प्रगती</span>
+        </div>
+        <div className="nav-item" onClick={() => navigate('/attendance')}>
+          <BookOpen size={20} /><span>उपस्थिती</span>
+        </div>
+      </nav>
+    </div>
+  );
+}
