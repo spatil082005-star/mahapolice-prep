@@ -1,14 +1,16 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { 
   Target, Flame, BookOpen, Clock, Brain, 
   TrendingUp, Calendar, ChevronRight, Award,
-  FileText, Zap, GraduationCap, ClipboardList
+  FileText, Zap, GraduationCap, ClipboardList, LogOut, User
 } from 'lucide-react';
 
 export default function HomePage() {
   const navigate = useNavigate();
   const { currentUser, getTodayTarget, quizHistory, logout } = useApp();
+  const [showDropdown, setShowDropdown] = useState(false);
   const todayTarget = getTodayTarget();
   const targetProgress = Math.min((todayTarget.completed / todayTarget.target) * 100, 100);
 
@@ -31,7 +33,6 @@ export default function HomePage() {
       {/* Header */}
       <header className="app-header">
         <div className="header-left">
-          <img src="/logo.svg" alt="SAKSHI OS" className="header-logo" />
           <div>
             <h1 className="header-title">नमस्कार, {currentUser?.name?.split(' ')[0] || 'विद्यार्थी'} 🙏</h1>
             <p className="header-subtitle">
@@ -40,13 +41,31 @@ export default function HomePage() {
             </p>
           </div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          {currentUser?.photo && (
-            <img src={currentUser.photo} alt="Profile" className="header-user-photo" />
+        <div className="header-profile-section">
+          <div 
+            className="profile-photo-wrapper" 
+            onClick={() => setShowDropdown(!showDropdown)}
+          >
+            {currentUser?.photo ? (
+              <img src={currentUser.photo} alt="Profile" className="header-user-photo" />
+            ) : (
+              <div className="header-user-photo-placeholder">
+                <User size={20} color="white" />
+              </div>
+            )}
+          </div>
+          {showDropdown && (
+            <div className="profile-dropdown">
+              <button className="dropdown-item" onClick={() => { setShowDropdown(false); navigate('/profile'); }}>
+                <User size={16} />
+                <span>प्रोफाइल</span>
+              </button>
+              <button className="dropdown-item logout-item" onClick={() => { setShowDropdown(false); logout(); }}>
+                <LogOut size={16} />
+                <span>बाहेर पडा</span>
+              </button>
+            </div>
           )}
-          <button className="logout-btn" onClick={logout} title="बाहेर पडा">
-            🚪
-          </button>
         </div>
       </header>
 

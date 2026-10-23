@@ -1,9 +1,9 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { subjects } from '../data/questions';
 import { extractTextFromPDF, parseQuestionsFromText } from '../utils/pdfParser';
-import { Plus, Trash2, BookOpen, Users, FileText, CheckCircle, Upload, FileUp } from 'lucide-react';
+import { Plus, Trash2, BookOpen, Users, FileText, CheckCircle, Upload, FileUp, LogOut, User } from 'lucide-react';
 
 type Tab = 'create' | 'pdf-upload' | 'my-tests' | 'students';
 
@@ -34,6 +34,7 @@ export default function TeacherDashboard() {
   const [pdfDifficulty, setPdfDifficulty] = useState<'सोपे' | 'मध्यम' | 'कठीण'>('सोपे');
   const [pdfTopic, setPdfTopic] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   const students = users.filter(u => u.role === 'student');
   const myQuestions = getTeacherQuestions();
@@ -157,13 +158,37 @@ export default function TeacherDashboard() {
     <div className="app-container">
       <header className="app-header teacher-header">
         <div className="header-left">
-          <img src="/logo.svg" alt="SAKSHI OS" className="header-logo" />
           <div>
-            <h1 className="header-title">👨‍🏫 शिक्षक पॅनल</h1>
+            <h1 className="header-title">👨‍ शिक्षक पॅनल</h1>
             <p className="header-subtitle">नमस्कार, {currentUser?.name}</p>
           </div>
         </div>
-        <button className="logout-btn" onClick={logout} title="बाहेर पडा">🚪</button>
+        <div className="header-profile-section">
+          <div 
+            className="profile-photo-wrapper" 
+            onClick={() => setShowDropdown(!showDropdown)}
+          >
+            {currentUser?.photo ? (
+              <img src={currentUser.photo} alt="Profile" className="header-user-photo" />
+            ) : (
+              <div className="header-user-photo-placeholder">
+                <User size={20} color="white" />
+              </div>
+            )}
+          </div>
+          {showDropdown && (
+            <div className="profile-dropdown">
+              <button className="dropdown-item" onClick={() => { setShowDropdown(false); navigate('/profile'); }}>
+                <User size={16} />
+                <span>प्रोफाइल</span>
+              </button>
+              <button className="dropdown-item logout-item" onClick={() => { setShowDropdown(false); logout(); }}>
+                <LogOut size={16} />
+                <span>बाहेर पडा</span>
+              </button>
+            </div>
+          )}
+        </div>
       </header>
 
       {/* Tab Navigation */}
