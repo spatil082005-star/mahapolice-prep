@@ -15,19 +15,30 @@ import AdminDashboard from './pages/AdminDashboard';
 import TeacherDashboard from './pages/TeacherDashboard';
 import './styles.css';
 
+function getHomePath(role: string): string {
+  switch (role) {
+    case 'admin': return '/admin';
+    case 'teacher': return '/teacher';
+    default: return '/';
+  }
+}
+
 function ProtectedRoute({ children, allowedRoles }: { children: React.ReactNode; allowedRoles?: string[] }) {
   const { currentUser } = useApp();
-  if (!currentUser) return <Navigate to="/login" />;
-  if (allowedRoles && !allowedRoles.includes(currentUser.role)) return <Navigate to="/login" />;
+  if (!currentUser) return <Navigate to="/login" replace />;
+  if (allowedRoles && !allowedRoles.includes(currentUser.role)) {
+    return <Navigate to={getHomePath(currentUser.role)} replace />;
+  }
   return <>{children}</>;
 }
 
 function AppRoutes() {
   const { currentUser } = useApp();
+  const redirectPath = currentUser ? getHomePath(currentUser.role) : '/login';
   
   return (
     <Routes>
-      <Route path="/login" element={currentUser ? <Navigate to="/" /> : <LoginPage />} />
+      <Route path="/login" element={currentUser ? <Navigate to={redirectPath} replace /> : <LoginPage />} />
       
       {/* Student Routes */}
       <Route path="/" element={<ProtectedRoute allowedRoles={['student']}><HomePage /></ProtectedRoute>} />
@@ -47,7 +58,7 @@ function AppRoutes() {
       {/* Teacher Routes */}
       <Route path="/teacher" element={<ProtectedRoute allowedRoles={['teacher']}><TeacherDashboard /></ProtectedRoute>} />
       
-      <Route path="*" element={<Navigate to="/" />} />
+      <Route path="*" element={<Navigate to={currentUser ? getHomePath(currentUser.role) : '/login'} replace />} />
     </Routes>
   );
 }

@@ -39,12 +39,27 @@ export interface DailyTarget {
   completed: number;
 }
 
+export interface TeacherQuestion {
+  id: string;
+  teacherId: string;
+  teacherName: string;
+  subject: string;
+  topic: string;
+  question: string;
+  options: string[];
+  correct: number;
+  explanation: string;
+  difficulty: 'सोपे' | 'मध्यम' | 'कठीण';
+  createdAt: string;
+}
+
 interface AppState {
   currentUser: User | null;
   users: User[];
   quizHistory: QuizResult[];
   attendance: AttendanceRecord[];
   dailyTargets: DailyTarget[];
+  teacherQuestions: TeacherQuestion[];
 }
 
 interface AppContextType extends AppState {
@@ -68,6 +83,10 @@ interface AppContextType extends AppState {
   getAllStudents: () => User[];
   getAllTeachers: () => User[];
   deleteUser: (userId: string) => void;
+  // Teacher question management
+  addTeacherQuestion: (q: Omit<TeacherQuestion, 'id' | 'teacherId' | 'teacherName' | 'createdAt'>) => void;
+  getTeacherQuestions: () => TeacherQuestion[];
+  deleteTeacherQuestion: (questionId: string) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -118,7 +137,7 @@ const loadState = (): AppState => {
           allUsers.push(u);
         }
       });
-      return { ...parsed, users: allUsers };
+      return { ...parsed, users: allUsers, teacherQuestions: parsed.teacherQuestions || [] };
     }
   } catch (e) {
     console.error('Failed to load state:', e);
@@ -129,6 +148,7 @@ const loadState = (): AppState => {
     quizHistory: [],
     attendance: [],
     dailyTargets: [],
+    teacherQuestions: [],
   };
 };
 
@@ -297,6 +317,35 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }));
   };
 
+  // Teacher question management
+  const addTeacherQuestion = (q: Omit<TeacherQuestion, 'id' | 'teacherId' | 'teacherName' | 'createdAt'>) => {
+    if (!state.currentUser) return;
+    const newQuestion: TeacherQuestion = {
+      ...q,
+      id: `tq-${Date.now()}`,
+      teacherId: state.currentUser.id,
+      teacherName: state.currentUser.name,
+      createdAt: new Date().toISOString(),
+    };
+    setState(prev => ({
+      ...prev,
+      teacherQuestions: [newQuestion, ...prev.teacherQuestions],
+    }));
+  };
+
+  const getTeacherQuestions = () => {
+    if (!state.currentUser) return [];
+    if (state.currentUser.role === 'admin') return state.teacherQuestions;
+    return state.teacherQuestions.filter(q => q.teacherId === state.currentUser!.id);
+  };
+
+  const deleteTeacherQuestion = (questionId: string) => {
+    setState(prev => ({
+      ...prev,
+      teacherQuestions: prev.teacherQuestions.filter(q => q.id !== questionId),
+    }));
+  };
+
   return (
     <AppContext.Provider value={{
       ...state,
@@ -314,6 +363,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
       getAllStudents,
       getAllTeachers,
       deleteUser,
+      addTeacherQuestion,
+      getTeacherQuestions,
+      deleteTeacherQuestion,
     }}>
       {children}
     </AppContext.Provider>
