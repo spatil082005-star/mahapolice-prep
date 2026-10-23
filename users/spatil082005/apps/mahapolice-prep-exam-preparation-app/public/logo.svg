@@ -1,67 +1,124 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 320" width="400" height="320">
-  <!-- Background -->
-  <rect width="400" height="320" fill="transparent"/>
-  
-  <!-- Wings Left -->
-  <path d="M120 100 Q60 80 40 120 Q60 130 120 140" fill="#1e3a5f" opacity="0.9"/>
-  <path d="M120 120 Q70 110 50 140 Q70 145 120 155" fill="#1e3a5f" opacity="0.7"/>
-  <path d="M120 140 Q80 135 60 160 Q80 162 120 170" fill="#1e3a5f" opacity="0.5"/>
-  
-  <!-- Wings Right -->
-  <path d="M280 100 Q340 80 360 120 Q340 130 280 140" fill="#1e3a5f" opacity="0.9"/>
-  <path d="M280 120 Q330 110 350 140 Q330 145 280 155" fill="#1e3a5f" opacity="0.7"/>
-  <path d="M280 140 Q320 135 340 160 Q320 162 280 170" fill="#1e3a5f" opacity="0.5"/>
-  
-  <!-- Shield Background -->
-  <path d="M200 50 L290 90 L290 170 Q290 230 200 270 Q110 230 110 170 L110 90 Z" fill="#1e3a5f" stroke="#f59e0b" stroke-width="5"/>
-  
-  <!-- Shield Inner -->
-  <path d="M200 60 L280 95 L280 165 Q280 220 200 255 Q120 220 120 165 L120 95 Z" fill="#2d5a87"/>
-  
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 420" width="512" height="420">
+  <defs>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a3a6b"/>
+      <stop offset="100%" style="stop-color:#2d5a87"/>
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f5c842"/>
+      <stop offset="100%" style="stop-color:#d4a017"/>
+    </linearGradient>
+    <linearGradient id="wingGradL" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1a3a6b"/>
+      <stop offset="60%" style="stop-color:#2d5a87"/>
+      <stop offset="100%" style="stop-color:#f5c842"/>
+    </linearGradient>
+    <linearGradient id="wingGradR" x1="100%" y1="0%" x2="0%" y2="0%">
+      <stop offset="0%" style="stop-color:#1a3a6b"/>
+      <stop offset="60%" style="stop-color:#2d5a87"/>
+      <stop offset="100%" style="stop-color:#f5c842"/>
+    </linearGradient>
+  </defs>
+
   <!-- Stars on top -->
-  <text x="155" y="75" font-size="18" fill="#f59e0b">★</text>
-  <text x="177" y="65" font-size="18" fill="#f59e0b">★</text>
-  <text x="200" y="60" font-size="18" fill="#f59e0b">★</text>
-  <text x="223" y="65" font-size="18" fill="#f59e0b">★</text>
-  <text x="245" y="75" font-size="18" fill="#f59e0b">★</text>
+  <polygon points="256,15 261,28 274,28 263,36 267,49 256,41 245,49 249,36 238,28 251,28" fill="#1a3a6b"/>
+  <polygon points="208,25 212,35 222,35 214,41 217,51 208,45 199,51 202,41 194,35 204,35" fill="#1a3a6b"/>
+  <polygon points="304,25 308,35 318,35 310,41 313,51 304,45 295,51 298,41 290,35 300,35" fill="#1a3a6b"/>
+  <polygon points="165,40 168,48 176,48 170,53 172,61 165,56 158,61 160,53 154,48 162,48" fill="#1a3a6b"/>
+  <polygon points="347,40 350,48 358,48 352,53 354,61 347,56 340,61 342,53 336,48 344,48" fill="#1a3a6b"/>
+
+  <!-- Left Wing -->
+  <path d="M170,130 Q90,90 30,120 Q55,135 100,140 Q65,150 45,170 Q80,162 120,158 Q90,175 70,195 Q110,182 150,178 Q125,195 115,210 Q145,198 170,192" fill="url(#wingGradL)" opacity="0.95"/>
+  <path d="M165,140 Q110,110 60,130 Q80,140 115,145" fill="#2d5a87" opacity="0.6"/>
+  <path d="M160,155 Q115,135 75,150 Q95,155 125,158" fill="#f5c842" opacity="0.4"/>
+
+  <!-- Right Wing -->
+  <path d="M342,130 Q422,90 482,120 Q457,135 412,140 Q447,150 467,170 Q432,162 392,158 Q422,175 442,195 Q402,182 362,178 Q387,195 397,210 Q367,198 342,192" fill="url(#wingGradR)" opacity="0.95"/>
+  <path d="M347,140 Q402,110 452,130 Q432,140 397,145" fill="#2d5a87" opacity="0.6"/>
+  <path d="M352,155 Q397,135 437,150 Q417,155 387,158" fill="#f5c842" opacity="0.4"/>
+
+  <!-- Shield - main -->
+  <path d="M256,50 L380,100 L380,220 Q380,330 256,380 Q132,330 132,220 L132,100 Z" fill="url(#shieldGrad)" stroke="url(#goldGrad)" stroke-width="7"/>
   
-  <!-- Police Officer Head -->
-  <circle cx="200" cy="120" r="28" fill="#fbbf24"/>
+  <!-- Shield - inner -->
+  <path d="M256,62 L370,107 L370,215 Q370,320 256,368 Q142,320 142,215 L142,107 Z" fill="none" stroke="url(#goldGrad)" stroke-width="2" opacity="0.4"/>
+
+  <!-- Shield - gold top stripe -->
+  <path d="M256,62 L370,107 L370,135 L256,90 L142,135 L142,107 Z" fill="url(#goldGrad)" opacity="0.25"/>
+
+  <!-- Police Officer - Uniform/Body -->
+  <rect x="205" y="230" width="102" height="110" rx="12" fill="#1a2a4a"/>
+  <!-- Uniform collar -->
+  <path d="M230,230 L256,250 L282,230" fill="none" stroke="#2d3a5a" stroke-width="2"/>
+  <!-- Epaulettes -->
+  <rect x="198" y="235" width="22" height="14" rx="4" fill="#f5c842"/>
+  <rect x="292" y="235" width="22" height="14" rx="4" fill="#f5c842"/>
+  <!-- Buttons -->
+  <circle cx="256" cy="260" r="3" fill="#f5c842"/>
+  <circle cx="256" cy="280" r="3" fill="#f5c842"/>
+  <circle cx="256" cy="300" r="3" fill="#f5c842"/>
+
+  <!-- Police Officer - Head -->
+  <ellipse cx="256" cy="185" rx="38" ry="44" fill="#d4a574"/>
   
   <!-- Police Cap -->
-  <path d="M172 115 Q200 105 228 115 L228 105 Q200 95 172 105 Z" fill="#1e3a5f"/>
-  <rect x="185" y="100" width="30" height="10" fill="#f59e0b" rx="3"/>
-  <circle cx="200" cy="105" r="4" fill="#1e3a5f"/>
-  
-  <!-- Officer Face -->
-  <circle cx="192" cy="118" r="2" fill="#1e3a5f"/>
-  <circle cx="208" cy="118" r="2" fill="#1e3a5f"/>
-  <path d="M195 128 Q200 132 205 128" stroke="#1e3a5f" stroke-width="2" fill="none"/>
-  
-  <!-- Officer Body -->
-  <rect x="175" y="148" width="50" height="60" fill="#1e3a5f" rx="8"/>
-  
+  <path d="M215,175 Q256,158 297,175 L297,163 Q256,146 215,163 Z" fill="#1a2a4a"/>
+  <!-- Cap brim -->
+  <path d="M212,177 Q256,186 300,177 Q256,180 212,177" fill="#1a2a4a"/>
+  <!-- Cap badge -->
+  <circle cx="256" cy="168" r="10" fill="#f5c842"/>
+  <polygon points="256,161 259,167 265,167 260,171 262,177 256,173 250,177 252,171 247,167 253,167" fill="#1a2a4a"/>
+  <!-- Cap band -->
+  <rect x="218" y="172" width="76" height="6" rx="3" fill="#f5c842"/>
+
+  <!-- Face details -->
+  <!-- Eyes -->
+  <ellipse cx="242" cy="188" rx="6" ry="5" fill="#1a2a4a"/>
+  <ellipse cx="270" cy="188" rx="6" ry="5" fill="#1a2a4a"/>
+  <circle cx="241" cy="187" r="2.5" fill="white"/>
+  <circle cx="269" cy="187" r="2.5" fill="white"/>
+  <!-- Eyebrows -->
+  <path d="M235,180 Q242,176 249,180" stroke="#1a2a4a" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M263,180 Q270,176 277,180" stroke="#1a2a4a" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <!-- Nose -->
+  <path d="M256,192 L252,203 Q256,206 260,203 Z" fill="#c4956a"/>
+  <!-- Mouth -->
+  <path d="M246,210 Q256,215 266,210" stroke="#8b6040" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <!-- Ears -->
+  <ellipse cx="217" cy="192" rx="7" ry="12" fill="#d4a574"/>
+  <ellipse cx="295" cy="192" rx="7" ry="12" fill="#d4a574"/>
+
   <!-- Badge on chest -->
-  <circle cx="200" cy="170" r="10" fill="#f59e0b"/>
-  <text x="200" y="174" font-size="12" font-weight="bold" fill="#1e3a5f" text-anchor="middle">★</text>
-  
-  <!-- Small shield on badge -->
-  <path d="M200 165 L205 168 L205 173 Q205 176 200 178 Q195 176 195 173 L195 168 Z" fill="#1e3a5f"/>
-  
+  <path d="M256,250 L270,260 L270,276 Q270,286 256,292 Q242,286 242,276 L242,260 Z" fill="#f5c842" stroke="#d4a017" stroke-width="2"/>
+  <polygon points="256,255 259,262 266,262 260,267 262,274 256,270 250,274 252,267 246,262 253,262" fill="#1a2a4a"/>
+
+  <!-- Small shield icon -->
+  <path d="M315,210 L332,220 L332,236 Q332,248 315,255 Q298,248 298,236 L298,220 Z" fill="#f5c842" opacity="0.7"/>
+
   <!-- Gun Left -->
-  <rect x="85" y="175" width="45" height="10" fill="#374151" rx="3" transform="rotate(-25 107 180)"/>
-  <rect x="90" y="187" width="18" height="25" fill="#374151" rx="3" transform="rotate(-25 99 199)"/>
-  <circle cx="88" cy="178" r="3" fill="#6b7280"/>
-  
+  <g transform="translate(85, 215) rotate(-30)">
+    <rect x="0" y="0" width="70" height="16" rx="4" fill="#3a3a3a"/>
+    <rect x="5" y="16" width="25" height="35" rx="5" fill="#3a3a3a"/>
+    <rect x="0" y="3" width="12" height="10" rx="3" fill="#555"/>
+    <circle cx="65" cy="8" r="5" fill="#555"/>
+    <rect x="12" y="18" width="14" height="10" rx="3" fill="#555"/>
+    <rect x="8" y="20" width="8" height="25" rx="3" fill="#4a4a4a"/>
+  </g>
+
   <!-- Gun Right -->
-  <rect x="270" y="175" width="45" height="10" fill="#374151" rx="3" transform="rotate(25 292 180)"/>
-  <rect x="292" y="187" width="18" height="25" fill="#374151" rx="3" transform="rotate(25 301 199)"/>
-  <circle cx="312" cy="178" r="3" fill="#6b7280"/>
-  
+  <g transform="translate(357, 215) rotate(30)">
+    <rect x="0" y="0" width="70" height="16" rx="4" fill="#3a3a3a"/>
+    <rect x="40" y="16" width="25" height="35" rx="5" fill="#3a3a3a"/>
+    <rect x="58" y="3" width="12" height="10" rx="3" fill="#555"/>
+    <circle cx="5" cy="8" r="5" fill="#555"/>
+    <rect x="44" y="18" width="14" height="10" rx="3" fill="#555"/>
+    <rect x="54" y="20" width="8" height="25" rx="3" fill="#4a4a4a"/>
+  </g>
+
   <!-- Text SAKSHI.OS -->
-  <text x="200" y="295" font-size="36" font-weight="900" fill="#1e3a5f" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" letter-spacing="2">SAKSHI</text>
-  <text x="310" y="295" font-size="36" font-weight="900" fill="#f59e0b" text-anchor="middle" font-family="Arial Black, Arial, sans-serif">.OS</text>
-  
+  <text x="240" y="400" font-size="48" font-weight="900" fill="#1a2a4a" text-anchor="middle" font-family="'Arial Black', 'Impact', Arial, sans-serif" letter-spacing="2">SAKSHI</text>
+  <text x="400" y="400" font-size="48" font-weight="900" fill="#d4a017" text-anchor="middle" font-family="'Arial Black', 'Impact', Arial, sans-serif">.OS</text>
+
   <!-- Subtitle -->
-  <text x="200" y="312" font-size="13" font-weight="700" fill="#6b7280" text-anchor="middle" font-family="Arial, sans-serif" letter-spacing="3">POLICE &amp; PROTECTION</text>
+  <text x="256" y="418" font-size="15" font-weight="700" fill="#6b7280" text-anchor="middle" font-family="Arial, sans-serif" letter-spacing="5">POLICE &amp; PROTECTION</text>
 </svg>
